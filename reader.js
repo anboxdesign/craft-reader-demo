@@ -40,7 +40,7 @@ function updateControls() {
   els['view-toggle'].setAttribute('aria-pressed', String(isSpread()));
   els['page-number'].disabled = els['page-progress'].disabled = !pdf;
   els.stage.classList.toggle('is-zoomed',zoom > 1);
-  let active = toc[0];
+  let active = null;
   for (const link of toc) if (Number(link.dataset.page) <= page) active = link;
   for (const link of toc) {
     const selected = link === active;

@@ -7,7 +7,7 @@
   <meta name="description" content="Читайте фрагмент книги «Фиолетовый CRAFT»: введение и главу Василия Лебедева «Как придумать живой бренд».">
   <title>Читать фрагмент — Фиолетовый CRAFT</title>
   <link rel="icon" href="assets/ikra-logo.png">
-  <link rel="stylesheet" href="reader.css">
+  <link rel="stylesheet" href="reader.css?v=2">
   <link rel="stylesheet" href="vendor/pdfjs/text-layer.css">
 </head>
 <body>
@@ -41,7 +41,6 @@
     <aside class="sidebar" id="sidebar" aria-labelledby="contents-title">
       <div class="sidebar-heading"><h2 id="contents-title">Содержание</h2><button class="icon-button" id="close-contents" aria-label="Закрыть содержание" title="Закрыть содержание"><svg class="icon"><use href="#i-close"/></svg></button></div>
       <nav class="contents" aria-label="Разделы фрагмента">
-        <a href="#page=1" data-page="1" class="contents-link is-current" aria-current="location"><span>Привет, мы — книга</span><span class="folio">1</span></a>
         <a href="#page=3" data-page="3" class="contents-link"><span>Введение</span><span class="folio">3</span></a>
         <div class="chapter-group">
           <a href="#page=11" data-page="11" class="contents-link chapter-link"><span>Как придумать<br>живой бренд<small>Василий Лебедев</small></span><span class="folio">11</span></a>
@@ -56,7 +55,6 @@
           <a href="#page=40" data-page="40" class="contents-link step-link"><span class="step">7</span><span>Роль бренда</span><span class="folio">40</span></a>
         </div>
       </nav>
-      <div class="sidebar-note"><p>Можно читать по порядку.<br>Можно сразу к своей задаче.</p><small>Номера указаны по страницам PDF.</small></div>
     </aside>
 
     <main class="reader" id="reading-area" tabindex="-1" aria-label="Читалка фрагмента книги">
@@ -93,6 +91,6 @@
     </main>
   </div>
   <noscript><div class="noscript-panel">Для читалки нужен JavaScript. <a href="assets/CRAFT_test_2.pdf">Откройте оригинальный PDF</a>.</div></noscript>
-  <script src="reader.js" type="module"></script>
+  <script src="reader.js?v=2" type="module"></script>
 </body>
 </html>
