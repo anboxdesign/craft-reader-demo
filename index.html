@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#584193">
+  <meta name="description" content="Читайте фрагмент книги «Фиолетовый CRAFT»: введение и главу Василия Лебедева «Как придумать живой бренд».">
+  <title>Читать фрагмент — Фиолетовый CRAFT</title>
+  <link rel="icon" href="assets/ikra-logo.png">
+  <link rel="stylesheet" href="reader.css">
+  <link rel="stylesheet" href="vendor/pdfjs/text-layer.css">
+</head>
+<body>
+  <!-- THESIS: The original book is the reading surface. Its pages lead immediately.
+  OWN-WORLD: CRAFT purple, white paper, TT Fors, Ecomtech Mono, the supplied IKRA logo.
+  STORY: Open the real sample, read sequentially or jump to a step, enlarge and return.
+  FIRST VIEWPORT: Quiet masthead, contents at left, original two-page spread in the remaining field, controls below. Mobile shows one page with collapsible contents.
+  FORM: User-confirmed original PDF pages, code-led extension of the established CRAFT world; no concept seed required for this specified reader.
+  FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance -->
+  <a class="skip-link" href="#reading-area">К чтению</a>
+  <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h15m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M3 6h.1M3 12h.1M3 18h.1"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14M12 5v14"/></symbol>
+    <symbol id="i-spread" viewBox="0 0 24 24"><path d="M3 4h18v16H3zM12 4v16"/></symbol>
+    <symbol id="i-expand" viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19"/></symbol>
+    <symbol id="i-reset" viewBox="0 0 24 24"><path d="M4 9a8 8 0 1 1 0 6M4 3v6h6"/></symbol>
+  </svg>
+
+  <header class="masthead" id="masthead">
+    <a class="brand" href="#page=1" aria-label="Икра — к началу фрагмента"><span class="brand-mark" aria-hidden="true"></span></a>
+    <div class="book-title"><h1>Фиолетовый <span>CRAFT</span></h1><p>Фрагмент книги <span aria-hidden="true">·</span> 44 страницы</p></div>
+    <a class="download-link" href="assets/CRAFT_test_2.pdf" download="Фиолетовый-CRAFT-фрагмент.pdf"><svg class="icon"><use href="#i-download"/></svg><span>Скачать PDF</span><small>3 МБ</small></a>
+  </header>
+
+  <div class="reader-layout sidebar-open" id="reader-layout">
+    <div class="drawer-backdrop" id="drawer-backdrop" hidden></div>
+    <aside class="sidebar" id="sidebar" aria-labelledby="contents-title">
+      <div class="sidebar-heading"><h2 id="contents-title">Содержание</h2><button class="icon-button" id="close-contents" aria-label="Закрыть содержание" title="Закрыть содержание"><svg class="icon"><use href="#i-close"/></svg></button></div>
+      <nav class="contents" aria-label="Разделы фрагмента">
+        <a href="#page=1" data-page="1" class="contents-link is-current" aria-current="location"><span>Привет, мы — книга</span><span class="folio">1</span></a>
+        <a href="#page=3" data-page="3" class="contents-link"><span>Введение</span><span class="folio">3</span></a>
+        <div class="chapter-group">
+          <a href="#page=11" data-page="11" class="contents-link chapter-link"><span>Как придумать<br>живой бренд<small>Василий Лебедев</small></span><span class="folio">11</span></a>
+          <a href="#page=12" data-page="12" class="contents-link sub-link"><span>Зачем вам CRAFT<br>для бренд-платформы</span><span class="folio">12</span></a>
+          <a href="#page=15" data-page="15" class="contents-link sub-link"><span>Якорный фреймворк</span><span class="folio">15</span></a>
+          <a href="#page=17" data-page="17" class="contents-link step-link"><span class="step">1</span><span>Атрибуты бренда</span><span class="folio">17</span></a>
+          <a href="#page=21" data-page="21" class="contents-link step-link"><span class="step">2</span><span>Преимущества</span><span class="folio">21</span></a>
+          <a href="#page=25" data-page="25" class="contents-link step-link"><span class="step">3</span><span>Архетип и образ</span><span class="folio">25</span></a>
+          <a href="#page=30" data-page="30" class="contents-link step-link"><span class="step">4</span><span>Мир персонажа</span><span class="folio">30</span></a>
+          <a href="#page=33" data-page="33" class="contents-link step-link"><span class="step">5</span><span>Характер бренда</span><span class="folio">33</span></a>
+          <a href="#page=38" data-page="38" class="contents-link step-link"><span class="step">6</span><span>Ценности бренда</span><span class="folio">38</span></a>
+          <a href="#page=40" data-page="40" class="contents-link step-link"><span class="step">7</span><span>Роль бренда</span><span class="folio">40</span></a>
+        </div>
+      </nav>
+      <div class="sidebar-note"><p>Можно читать по порядку.<br>Можно сразу к своей задаче.</p><small>Номера указаны по страницам PDF.</small></div>
+    </aside>
+
+    <main class="reader" id="reading-area" tabindex="-1" aria-label="Читалка фрагмента книги">
+      <div class="toolbar" role="group" aria-label="Настройки чтения">
+        <button class="text-button contents-toggle" id="contents-toggle" aria-controls="sidebar" aria-expanded="true"><svg class="icon"><use href="#i-list"/></svg><span>Содержание</span></button>
+        <div class="toolbar-divider"></div>
+        <p class="current-section" id="current-section">Привет, мы — книга</p>
+        <div class="view-controls">
+          <button class="icon-button view-toggle" id="view-toggle" aria-label="Показывать разворот" aria-pressed="true" title="Разворот / одна страница" disabled><svg class="icon"><use href="#i-spread"/></svg></button>
+          <div class="zoom-controls" role="group" aria-label="Масштаб">
+            <button class="icon-button" id="zoom-out" aria-label="Уменьшить" title="Уменьшить" disabled><svg class="icon"><use href="#i-minus"/></svg></button>
+            <button class="zoom-reset" id="zoom-reset" aria-label="Вписать страницу в экран" title="Вписать в экран" disabled>100%</button>
+            <button class="icon-button" id="zoom-in" aria-label="Увеличить" title="Увеличить" disabled><svg class="icon"><use href="#i-plus"/></svg></button>
+          </div>
+          <button class="icon-button fullscreen-toggle" id="fullscreen-toggle" aria-label="На весь экран" title="На весь экран"><svg class="icon"><use href="#i-expand"/></svg></button>
+        </div>
+      </div>
+
+      <div class="stage" id="stage" aria-busy="true" tabindex="0" aria-label="Страницы книги. Для листания используйте стрелки влево и вправо.">
+        <div class="book-mat"><div class="book" id="book"></div></div>
+        <div class="loading-note" id="loading-note" role="status"><span class="loading-line" aria-hidden="true"></span><p>Открываем книгу…</p></div>
+        <section class="error-panel" id="error-panel" hidden aria-labelledby="error-title"><h2 id="error-title">Книга не загрузилась</h2><p id="error-description">Проверьте соединение и попробуйте ещё раз.</p><div><button class="primary-button" id="retry"><svg class="icon"><use href="#i-reset"/></svg>Попробовать ещё раз</button><a href="assets/CRAFT_test_2.pdf" target="_blank" rel="noopener">Открыть PDF</a></div></section>
+      </div>
+
+      <footer class="reader-footer">
+        <div class="footer-row">
+          <form class="page-form" id="page-form"><label for="page-number">Страница PDF</label><div><input id="page-number" type="text" inputmode="numeric" pattern="[0-9]+" value="1" aria-label="Перейти на страницу PDF, от 1 до 44" autocomplete="off" disabled><span id="spread-end"></span><span class="page-total">/ 44</span></div></form>
+          <div class="paging-controls" role="group" aria-label="Листание страниц"><button class="paging-button" id="previous" aria-label="Предыдущая страница" disabled><svg class="icon reverse"><use href="#i-arrow"/></svg></button><button class="paging-button next-button" id="next" aria-label="Следующая страница" disabled><svg class="icon"><use href="#i-arrow"/></svg></button></div>
+          <p class="reading-hint" id="reading-hint">Листайте стрелками на клавиатуре</p>
+        </div>
+        <label class="sr-only" for="page-progress">Перейти на страницу PDF</label><input class="page-progress" id="page-progress" type="range" min="1" max="44" value="1" aria-valuetext="Страница 1 из 44" disabled>
+      </footer>
+      <p class="sr-only" id="announcer" aria-live="polite" aria-atomic="true"></p>
+    </main>
+  </div>
+  <noscript><div class="noscript-panel">Для читалки нужен JavaScript. <a href="assets/CRAFT_test_2.pdf">Откройте оригинальный PDF</a>.</div></noscript>
+  <script src="reader.js" type="module"></script>
+</body>
+</html>
