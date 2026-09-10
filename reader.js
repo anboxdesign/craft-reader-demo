@@ -22,9 +22,9 @@ function savePosition() {
   try { localStorage.setItem(STORAGE, JSON.stringify({page})); } catch {}
 }
 
-function updateControls() {
+function updateControls({preservePageInput = false} = {}) {
   const pages = visiblePages(), first = pages[0], last = pages.at(-1);
-  els['page-number'].value = String(first);
+  if (!preservePageInput || document.activeElement !== els['page-number']) els['page-number'].value = String(first);
   els['spread-end'].textContent = last !== first ? `–${last}` : '';
   els['page-progress'].value = first;
   els['page-progress'].setAttribute('aria-valuetext', `Страница ${first} из ${TOTAL}`);
@@ -271,6 +271,7 @@ document.addEventListener('fullscreenchange',() => {
 });
 
 document.addEventListener('keydown',event => {
+  if (document.querySelector('dialog[open]')) return;
   if (sidebarOpen && !desktop.matches) {
     if (event.key === 'Escape') {event.preventDefault();setSidebar(false,true);}
     if (event.key === 'Tab') {
@@ -306,9 +307,9 @@ els.stage.addEventListener('touchend',event => {
 
 new ResizeObserver(() => {
   clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(() => {updateControls();render();},120);
+  resizeTimer = setTimeout(() => {updateControls({preservePageInput:true});render();},120);
 }).observe(els.stage);
-desktop.addEventListener('change',() => {setSidebar(desktop.matches);updateControls();render({resetScroll:true});});
+desktop.addEventListener('change',() => {setSidebar(desktop.matches);updateControls({preservePageInput:true});render({resetScroll:true});});
 window.addEventListener('pagehide',() => {savePosition();cancelRender();});
 window.addEventListener('pageshow',event => {if (event.persisted) render();});
 setSidebar(sidebarOpen);

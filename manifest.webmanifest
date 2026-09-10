@@ -1,0 +1,16 @@
+{
+  "id": "./",
+  "name": "Фиолетовый CRAFT — читалка",
+  "short_name": "CRAFT",
+  "description": "44 страницы фрагмента книги «Фиолетовый CRAFT» для чтения онлайн и офлайн.",
+  "lang": "ru",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#584193",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

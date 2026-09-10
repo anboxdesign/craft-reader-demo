@@ -7,7 +7,12 @@
   <meta name="description" content="Читайте фрагмент книги «Фиолетовый CRAFT»: введение и главу Василия Лебедева «Как придумать живой бренд».">
   <title>Читать фрагмент — Фиолетовый CRAFT</title>
   <link rel="icon" href="assets/ikra-logo.png">
-  <link rel="stylesheet" href="reader.css?v=2">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="CRAFT">
+  <link rel="stylesheet" href="reader.css?v=3">
+  <link rel="stylesheet" href="pwa.css?v=3">
   <link rel="stylesheet" href="vendor/pdfjs/text-layer.css">
 </head>
 <body>
@@ -28,12 +33,16 @@
     <symbol id="i-expand" viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="m5 5 14 14M19 5 5 19"/></symbol>
     <symbol id="i-reset" viewBox="0 0 24 24"><path d="M4 9a8 8 0 1 1 0 6M4 3v6h6"/></symbol>
+    <symbol id="i-app" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M10 18h4M12 6v7m-3-3 3 3 3-3"/></symbol>
   </svg>
 
   <header class="masthead" id="masthead">
     <a class="brand" href="#page=1" aria-label="Икра — к началу фрагмента"><span class="brand-mark" aria-hidden="true"></span></a>
     <div class="book-title"><h1>Фиолетовый <span>CRAFT</span></h1><p>Фрагмент книги <span aria-hidden="true">·</span> 44 страницы</p></div>
-    <a class="download-link" href="assets/CRAFT_test_2.pdf" download="Фиолетовый-CRAFT-фрагмент.pdf"><svg class="icon"><use href="#i-download"/></svg><span>Скачать PDF</span><small>3 МБ</small></a>
+    <div class="masthead-actions">
+      <button class="app-button" id="open-app" aria-haspopup="dialog" aria-controls="app-dialog" aria-label="Установка приложения и офлайн-чтение"><svg class="icon" aria-hidden="true"><use href="#i-app"/></svg><span>Приложение</span></button>
+      <a class="download-link" href="assets/CRAFT_test_2.pdf" download="Фиолетовый-CRAFT-фрагмент.pdf"><svg class="icon"><use href="#i-download"/></svg><span>Скачать PDF</span><small>3 МБ</small></a>
+    </div>
   </header>
 
   <div class="reader-layout sidebar-open" id="reader-layout">
@@ -91,6 +100,26 @@
     </main>
   </div>
   <noscript><div class="noscript-panel">Для читалки нужен JavaScript. <a href="assets/CRAFT_test_2.pdf">Откройте оригинальный PDF</a>.</div></noscript>
-  <script src="reader.js?v=2" type="module"></script>
+  <dialog class="app-dialog" id="app-dialog" aria-labelledby="app-title">
+    <div class="app-dialog-heading"><h2 id="app-title">CRAFT с собой</h2><button class="icon-button" id="close-app" aria-label="Закрыть окно приложения"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
+    <p class="app-intro">Читайте фрагмент книги с главного экрана — в том числе без интернета.</p>
+    <section class="app-section" aria-labelledby="install-title">
+      <h3 id="install-title">На главном экране</h3>
+      <p id="install-help">Откройте меню браузера и выберите «Установить приложение» или «Добавить на главный экран».</p>
+      <button class="primary-button" id="install-app" hidden>Установить приложение</button>
+      <a class="primary-button direct-app-link" id="direct-app" href="./" target="_blank" rel="noopener" hidden>Открыть читалку отдельно</a>
+    </section>
+    <section class="app-section" aria-labelledby="offline-title">
+      <h3 id="offline-title">Без интернета</h3>
+      <p>Сохраните все 44 страницы и читалку на этом устройстве. Место чтения сохраняется автоматически.</p>
+      <p class="offline-status" id="offline-status" role="status" aria-live="polite">Проверяем сохранённую копию…</p>
+      <progress id="offline-progress" aria-label="Сохранение для офлайн-чтения" max="100" value="0" hidden></progress>
+      <button class="primary-button" id="save-offline" disabled>Сохранить для офлайн-чтения</button>
+      <p class="app-note" id="offline-note">После установки откройте приложение и сохраните фрагмент в нём. Если очистить данные браузера, потребуется сохранить его снова.</p>
+    </section>
+    <p class="app-demo-note">Демо · фрагмент в свободном доступе. Оплата и вход не требуются.</p>
+  </dialog>
+  <script src="reader.js?v=3" type="module"></script>
+  <script src="pwa.js?v=3" type="module"></script>
 </body>
 </html>
