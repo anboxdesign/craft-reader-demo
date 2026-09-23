@@ -19,13 +19,51 @@
 .app-dialog .offline-status{font-size:.875rem;color:var(--purple)}
 .app-dialog progress{width:100%;height:8px;margin:0 0 16px;accent-color:var(--purple)}
 .direct-app-link{text-decoration:none}
-.safari-guide{margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}
+.safari-guide{margin-top:20px}
 .safari-guide h4{margin:0 0 10px;font-size:1rem;font-weight:560;color:var(--purple)}
 .safari-fallback{margin-top:8px}
 .safari-fallback summary{min-height:44px;padding:12px 0;color:var(--purple);cursor:pointer;font-size:.875rem;line-height:1.5;overflow-wrap:anywhere}
 .safari-fallback[open] summary{margin-bottom:8px}
 .app-dialog .secondary-button{background:transparent;color:var(--purple);border:1px solid var(--purple)}
 .app-dialog .secondary-button:hover{background:var(--hover)}
+.install-nudge{display:flex;align-items:center;gap:8px;flex:none;padding:6px 16px;border-bottom:1px solid var(--line);background:var(--desk);color:var(--purple)}
+.install-nudge>button:first-child{display:flex;align-items:center;gap:12px;min-height:48px;min-width:0;flex:1;text-align:left;font-size:.875rem}
+.install-nudge>button:first-child>span{flex:1;min-width:0;overflow-wrap:anywhere}
+.install-nudge small{display:block;margin-top:3px;font-size:.75rem;text-decoration:underline;text-underline-offset:3px}
+.install-nudge .icon-button{width:44px}
+.guide-progress{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 22px}
+.guide-progress button{display:flex;align-items:center;justify-content:center;flex:1 0 auto;min-height:48px;gap:6px;padding:6px 2px;border-bottom:2px solid var(--line);font-size:.75rem;color:var(--purple);white-space:nowrap}
+.guide-progress button>span{font-family:"Ecomtech Mono",monospace;font-size:1rem}
+.guide-progress button[aria-current="step"]{border-color:var(--purple);font-weight:650}
+.app-dialog .guide-step h3{font-size:1.375rem;line-height:1.2;letter-spacing:-.02em}
+.comic-scene{display:grid;grid-template-columns:43% minmax(0,1fr);align-items:center;gap:12px;min-height:180px;margin:10px 0 18px;color:var(--purple)}
+.comic-character{aspect-ratio:2135/2208;overflow:hidden;width:100%;align-self:end}
+.comic-character img{display:block;width:300%;max-width:none;height:auto}
+.comic-character-second img{transform:translateX(-33.333333%)}
+.comic-character-third img{transform:translateX(-66.666667%)}
+.comic-phone{display:flex;flex-direction:column;align-items:center;justify-content:space-between;width:min(180px,100%);min-height:170px;border:1px solid var(--purple);border-radius:14px;padding:10px 8px;justify-self:center}
+.comic-phone-title{font-size:14px;font-weight:600}
+.comic-compass{width:64px;height:64px;fill:none;stroke:currentColor;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round}
+.comic-address{padding:8px 4px;background:var(--desk);border-radius:4px;font-size:11px;text-align:center;width:100%}
+.comic-page-title{font-family:"Ecomtech Mono",monospace;font-size:22px;padding:12px 0}
+.comic-toolbar{display:flex;align-items:center;justify-content:space-around;width:100%;gap:6px}
+.comic-toolbar>span{font-size:22px;line-height:1}
+.comic-toolbar .comic-highlight{box-sizing:content-box;width:24px;height:24px;padding:8px;border:1px solid var(--purple);border-radius:8px;background:var(--desk)}
+.comic-tabs{width:14px;height:17px;border:1px solid currentColor;border-radius:2px}
+.comic-label{font-size:12px;margin-top:8px}
+.comic-home{width:100%;justify-self:center}
+.comic-menu-row{display:flex;align-items:center;gap:8px;padding:12px 8px;border:1px solid var(--purple);border-radius:8px;font-size:13px;line-height:1.3}
+.comic-home-icon{display:grid;justify-items:center;gap:6px;margin-top:14px;font-size:12px}
+.comic-home-icon img{width:56px;height:56px;border-radius:12px}
+.inline-icon{display:inline-block;vertical-align:-.25em;width:1.25em;height:1.25em}
+.guide-actions{display:flex;align-items:stretch;gap:12px;margin-top:22px}
+.guide-back{min-width:64px;min-height:48px;padding:8px;color:var(--purple);text-decoration:underline;text-underline-offset:4px}
+.guide-actions .primary-button{flex:1;min-width:0}
+.app-dialog .guide-caption{font-size:.75rem;line-height:1.4;color:var(--secondary);margin:16px 0 0}
+.guide-text-button{display:block;min-height:44px;margin-top:12px;text-align:left;color:var(--purple);font-size:.875rem;text-decoration:underline;text-underline-offset:4px;overflow-wrap:anywhere}
+.guide-trouble summary{min-height:44px;padding:12px 0;cursor:pointer;color:var(--purple);font-size:.875rem}
+.guide-trouble p{padding:0 0 4px}
+.guide-step :is(summary,textarea):focus-visible,.safari-fallback summary:focus-visible{outline:2px solid var(--purple);outline-offset:3px}
 .app-dialog #copy-status:empty{display:none}
 .manual-reader-url{margin-top:14px}
 .manual-reader-url label{display:block;margin-bottom:8px;font-size:.875rem;color:var(--secondary)}

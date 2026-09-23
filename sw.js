@@ -1,4 +1,4 @@
-/* Regenerate offline-files.js with scripts/build-craft-reader-pwa-v5.cjs after edits. */
+/* Regenerate offline-files.js with scripts/build-craft-reader-pwa-v6.cjs after edits. */
 importScripts('./offline-files.js');
 const {version, files, migrations} = self.CRAFT_OFFLINE;
 const scope = new URL('./', self.location.href);

@@ -8,24 +8,64 @@ const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform 
 const standalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
 // Use the reader's own address, including inside Tilda; omit page state and query parameters.
 const directUrl = new URL('./', import.meta.url).href;
+const guideUrl = new URL(directUrl);
+guideUrl.searchParams.set('install', '2');
 // Explicit user-activated handoff; Telegram itself uses this scheme for Safari.
 // Safari/iOS may decline it, so manual copying always remains available.
-const safariUrl = directUrl.startsWith('https://') ? directUrl.replace(/^https:/, 'x-safari-https:') : null;
+const safariUrl = directUrl.startsWith('https://') ? guideUrl.href.replace(/^https:/, 'x-safari-https:') : null;
 $('direct-app').href = directUrl;
-$('reader-url').value = directUrl;
+$('reader-url').value = guideUrl.href;
 if (safariUrl) $('open-safari').href = safariUrl;
 else {
   $('safari-fallback').open = true;
   $('safari-fallback-title').textContent = 'Как открыть ссылку в Safari';
 }
 let installPrompt, registration, registering, saving = false, readyOffline = false;
+let guideMode = ios && !standalone(), guideStep = 0, appOpener = $('open-app');
+const hintKey = 'craft-install-hint-dismissed-v1';
+let hintDismissed = false;
+try { hintDismissed = localStorage.getItem(hintKey) === '1'; } catch { /* Reading also works without storage. */ }
+// Illustrations are decorative; retain every instruction if an image cannot load.
+document.querySelectorAll('.comic-scene img').forEach(img => {
+  const hideBrokenImage = () => { img.hidden = true; };
+  img.addEventListener('error', hideBrokenImage);
+  if (img.complete && !img.naturalWidth) hideBrokenImage();
+});
+
+function renderGuide({focus = false} = {}) {
+  document.querySelectorAll('[data-guide-step]').forEach((step, index) => { step.hidden = index !== guideStep; });
+  document.querySelectorAll('[data-guide-go]').forEach((button, index) => {
+    if (index === guideStep) button.setAttribute('aria-current', 'step'); else button.removeAttribute('aria-current');
+  });
+  $('guide-back').hidden = guideStep === 0;
+  $('guide-next').textContent = ['Я в Safari — дальше', 'Дальше', 'К чтению'][guideStep];
+  if (focus) {
+    dialog.scrollTop = 0;
+    const heading = document.querySelector(`[data-guide-step="${guideStep}"] h3`);
+    heading.focus({preventScroll:true});
+    if (heading.getBoundingClientRect().bottom > dialog.getBoundingClientRect().bottom - 32) heading.scrollIntoView({block:'center'});
+  }
+}
+
+function dismissHint() {
+  hintDismissed = true;
+  $('install-nudge').hidden = true;
+  try { localStorage.setItem(hintKey, '1'); } catch { /* A dismissed hint stays dismissed for this visit. */ }
+}
 
 function renderInstall() {
   $('install-app').hidden = !installPrompt || standalone() || embedded;
   $('direct-app').hidden = !embedded || ios;
-  $('safari-guide').hidden = !ios || standalone();
+  if (standalone()) guideMode = false;
+  $('safari-guide').hidden = !guideMode;
+  $('generic-install').hidden = guideMode || standalone();
+  $('offline-section').hidden = guideMode;
+  $('replay-install-guide').hidden = guideMode || standalone();
+  $('install-nudge').hidden = !ios || standalone() || hintDismissed;
+  document.querySelector('.app-intro').textContent = guideMode
+    ? 'Три шага — и CRAFT на главном экране.'
+    : 'Читайте фрагмент книги с главного экрана — в том числе без интернета.';
   $('open-safari').hidden = !ios || standalone() || !safariUrl;
-  $('safari-guide-title').textContent = embedded ? 'Как перейти в Safari' : 'Открыли в Telegram?';
   if (standalone()) {
     $('install-help').textContent = 'Читалка открыта как приложение. Сохраните фрагмент ниже, чтобы читать его без интернета.';
   } else if (ios) {
@@ -39,13 +79,14 @@ function renderInstall() {
       ? 'Установите CRAFT, чтобы открывать книгу с главного экрана.'
       : 'В Chrome или Edge откройте меню браузера и выберите «Установить приложение» или «Добавить на главный экран». Название пункта зависит от браузера.';
   }
+  renderGuide();
 }
 
 $('copy-reader-url').addEventListener('click', async () => {
   const button = $('copy-reader-url');
   button.disabled = true;
   try {
-    await navigator.clipboard.writeText(directUrl);
+    await navigator.clipboard.writeText(guideUrl.href);
     $('manual-reader-url').hidden = true;
     $('copy-status').textContent = 'Ссылка скопирована. Откройте Safari и вставьте её в адресную строку.';
   } catch {
@@ -132,13 +173,28 @@ async function updateStatus() {
   }
 }
 
-$('open-app').addEventListener('click', () => {
+function openApp(opener = $('open-app'), step) {
+  appOpener = opener;
+  guideMode = (ios && !standalone()) || Number.isInteger(step);
+  if (Number.isInteger(step)) guideStep = Math.max(0, Math.min(2, step));
   renderInstall();
-  dialog.showModal();
+  if (!dialog.open) dialog.showModal();
+  dialog.scrollTop = 0;
   updateStatus();
+}
+$('open-app').addEventListener('click', () => openApp());
+$('show-install-guide').addEventListener('click', event => openApp(event.currentTarget, 0));
+$('dismiss-install-guide').addEventListener('click', () => { dismissHint(); $('open-app').focus(); });
+document.querySelectorAll('[data-guide-go]').forEach(button => button.addEventListener('click', () => { guideStep = Number(button.dataset.guideGo); renderGuide({focus:true}); }));
+$('guide-back').addEventListener('click', () => { guideStep = Math.max(0, guideStep - 1); renderGuide({focus:true}); });
+$('guide-next').addEventListener('click', () => {
+  if (guideStep === 2) { dismissHint(); dialog.close(); }
+  else { guideStep++; renderGuide({focus:true}); }
 });
+$('show-offline-settings').addEventListener('click', () => { guideMode = false; renderInstall(); dialog.scrollTop = 0; $('offline-title').focus(); });
+$('replay-install-guide').addEventListener('click', () => { guideMode = true; guideStep = 0; renderInstall(); renderGuide({focus:true}); });
 $('close-app').addEventListener('click', () => dialog.close());
-dialog.addEventListener('close', () => $('open-app').focus());
+dialog.addEventListener('close', () => (appOpener.getClientRects().length ? appOpener : $('open-app')).focus());
 $('install-app').addEventListener('click', async () => {
   if (!installPrompt) return;
   const prompt = installPrompt;
@@ -180,3 +236,5 @@ addEventListener('offline', updateStatus);
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && dialog.open) updateStatus(); });
 renderInstall();
 updateStatus();
+// Only an explicit handoff link opens the guide automatically. Ordinary visits remain readable.
+if (new URLSearchParams(location.search).get('install') === '2' && !standalone()) openApp($('open-app'), 1);
