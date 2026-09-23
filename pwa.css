@@ -3,10 +3,11 @@
 .app-button{display:flex;align-items:center;justify-content:center;gap:9px;min-height:44px;min-width:44px;font-size:14px;color:var(--purple)}
 .app-button:hover span{text-decoration:underline;text-underline-offset:4px}
 .book-title{min-width:0}
-.app-dialog{box-sizing:border-box;width:min(480px,calc(100% - 32px));max-height:calc(100dvh - 32px);margin:auto;padding:28px;border:1px solid var(--line);border-radius:8px;color:var(--ink);background:var(--paper);overflow:auto;overscroll-behavior:contain}
+.app-dialog{box-sizing:border-box;width:min(480px,calc(100% - 32px));max-width:calc(100% - 32px);max-height:calc(100dvh - 32px);margin:auto;padding:28px;border:1px solid var(--line);border-radius:8px;color:var(--ink);background:var(--paper);overflow:auto;overscroll-behavior:contain}
 .app-dialog::backdrop{background:rgba(42,30,70,.4)}
 .app-dialog-heading{display:flex;align-items:center;gap:16px;justify-content:space-between;position:sticky;top:0;z-index:2;background:var(--paper);box-shadow:0 -28px 0 var(--paper);padding-bottom:8px}
 .app-dialog h2{margin:0;color:var(--purple);font-size:1.75rem;font-weight:520;letter-spacing:-.025em}
+.app-dialog :is(h2,h3,h4){min-width:0;overflow-wrap:anywhere}
 .app-dialog-heading .icon-button{width:44px;min-height:44px}
 .app-dialog h3{margin:0 0 10px;font-size:1.125rem;font-weight:560;color:var(--purple)}
 .app-dialog p{font-size:1rem;line-height:1.55;margin:0 0 16px;overflow-wrap:anywhere}
@@ -18,6 +19,12 @@
 .app-dialog .offline-status{font-size:.875rem;color:var(--purple)}
 .app-dialog progress{width:100%;height:8px;margin:0 0 16px;accent-color:var(--purple)}
 .direct-app-link{text-decoration:none}
+.safari-guide{margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}
+.safari-guide h4{margin:0 0 10px;font-size:1rem;font-weight:560;color:var(--purple)}
+.app-dialog #copy-status:empty{display:none}
+.manual-reader-url{margin-top:14px}
+.manual-reader-url label{display:block;margin-bottom:8px;font-size:.875rem;color:var(--secondary)}
+.manual-reader-url textarea{box-sizing:border-box;display:block;width:100%;padding:12px;border:1px solid var(--purple);border-radius:4px;background:var(--paper);color:var(--ink);font:inherit;font-size:1rem;line-height:1.4;resize:vertical;overflow-wrap:anywhere;user-select:text;-webkit-user-select:text}
 @media(max-width:899px){.masthead-actions{gap:10px}.app-button{font-size:12px}}
 @media(max-width:699px){.app-button span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}.masthead-actions{gap:2px}.masthead-actions .download-link{width:44px;min-width:44px;justify-content:center}.masthead-actions .download-link span,.masthead-actions .download-link small{display:none}.masthead{gap:12px}.book-title{padding-left:12px}.app-dialog{padding:20px}.app-dialog h2{font-size:1.5rem}}
 @media(max-width:359px){.masthead{gap:8px}.brand,.brand-mark{width:48px}.book-title{padding-left:8px}}

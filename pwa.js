@@ -6,23 +6,48 @@ const progress = $('offline-progress');
 const embedded = window.top !== window.self;
 const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 const standalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+// Use the reader's own address, including inside Tilda; omit page state and query parameters.
+const directUrl = new URL('./', import.meta.url).href;
+$('direct-app').href = directUrl;
+$('reader-url').value = directUrl;
 let installPrompt, registration, registering, saving = false, readyOffline = false;
 
 function renderInstall() {
   $('install-app').hidden = !installPrompt || standalone() || embedded;
-  $('direct-app').hidden = !embedded;
-  if (embedded) {
-    $('install-help').textContent = 'Для установки и офлайн-чтения откройте читалку отдельной страницей в браузере.';
-  } else if (standalone()) {
-    $('install-help').textContent = 'Читалка открыта как приложение. Сохраните фрагмент ниже, чтобы читать его без интернета.';
+  $('direct-app').hidden = !embedded || ios;
+  $('safari-guide').hidden = !ios || standalone();
+  $('safari-guide-title').textContent = embedded ? 'Как перейти в Safari' : 'Открыли в Telegram?';
+  if (standalone()) {
+    $('install-help').textContent = 'Читалка открыта как приложение. Сохраните фрагмент ниже, чтобы читать его без интернета.';
   } else if (ios) {
-    $('install-help').textContent = 'В Safari нажмите «Поделиться» → «На экран “Домой”» → «Добавить». Затем откройте CRAFT с главного экрана.';
+    $('install-help').textContent = embedded
+      ? 'Для установки откройте читалку в Safari по прямой ссылке. После этого: «Поделиться» → «На экран „Домой“» → «Добавить».'
+      : 'В Safari нажмите «Поделиться» → «На экран „Домой“» → «Добавить». Затем откройте CRAFT с главного экрана.';
+  } else if (embedded) {
+    $('install-help').textContent = 'Для установки и офлайн-чтения откройте читалку отдельной страницей в браузере.';
   } else {
     $('install-help').textContent = installPrompt
-      ? 'Установите CRAFT, чтобы открывать книгу с главного экрана.'
-      : 'В Chrome или Edge откройте меню браузера и выберите «Установить приложение» или «Добавить на главный экран». Название пункта зависит от браузера.';
+      ? 'Установите CRAFT, чтобы открывать книгу с главного экрана.'
+      : 'В Chrome или Edge откройте меню браузера и выберите «Установить приложение» или «Добавить на главный экран». Название пункта зависит от браузера.';
   }
 }
+
+$('copy-reader-url').addEventListener('click', async () => {
+  const button = $('copy-reader-url');
+  button.disabled = true;
+  try {
+    await navigator.clipboard.writeText(directUrl);
+    $('manual-reader-url').hidden = true;
+    $('copy-status').textContent = 'Ссылка скопирована. Откройте Safari и вставьте её в адресную строку.';
+  } catch {
+    $('manual-reader-url').hidden = false;
+    $('copy-status').textContent = 'Автоматически скопировать не удалось. Нажмите и удерживайте ссылку ниже, затем выберите «Скопировать».';
+    $('reader-url').focus();
+    $('reader-url').select();
+  } finally {
+    button.disabled = false;
+  }
+});
 
 function callWorker(type, onProgress) {
   return new Promise((resolve, reject) => {
@@ -33,7 +58,7 @@ function callWorker(type, onProgress) {
     const close = () => { clearTimeout(timer); channel.port1.close(); };
     const resetTimer = () => {
       clearTimeout(timer);
-      timer = setTimeout(() => { close(); reject(new Error('Сохранение прервалось. Проверьте соединение и повторите.')); }, 45000);
+      timer = setTimeout(() => { close(); reject(new Error('Сохранение прервалось. Проверьте соединение и повторите.')); }, 45000);
     };
     channel.port1.onmessage = ({data}) => {
       resetTimer();
@@ -54,11 +79,11 @@ async function prepareWorker() {
     if (!candidate.active) {
       await new Promise((resolve, reject) => {
         const worker = candidate.installing || candidate.waiting;
-        const timer = setTimeout(() => { cleanup(); reject(new Error('Не удалось подготовить офлайн-чтение. Проверьте соединение.')); }, 20000);
+        const timer = setTimeout(() => { cleanup(); reject(new Error('Не удалось подготовить офлайн-чтение. Проверьте соединение.')); }, 20000);
         const cleanup = () => { clearTimeout(timer); worker?.removeEventListener('statechange', check); };
         const check = () => {
           if (candidate.active) { cleanup(); resolve(); }
-          else if (!worker || worker.state === 'redundant') { cleanup(); reject(new Error('Не удалось загрузить читалку для офлайн-режима. Повторите попытку.')); }
+          else if (!worker || worker.state === 'redundant') { cleanup(); reject(new Error('Не удалось загрузить читалку для офлайн-режима. Повторите попытку.')); }
         };
         worker?.addEventListener('statechange', check);
         check();
@@ -73,12 +98,12 @@ async function prepareWorker() {
 async function updateStatus() {
   if (saving) return;
   if (embedded) {
-    status.textContent = 'Сохранение доступно в отдельно открытой читалке.';
+    status.textContent = 'Сохранение доступно в отдельно открытой читалке.';
     saveButton.hidden = true;
     return;
   }
   if (!('serviceWorker' in navigator) || !window.isSecureContext) {
-    status.textContent = 'Этот браузер не поддерживает офлайн-чтение. Откройте ссылку в Safari, Chrome или Edge.';
+    status.textContent = 'Этот браузер не поддерживает офлайн-чтение. Откройте ссылку в Safari, Chrome или Edge.';
     saveButton.disabled = true;
     return;
   }
@@ -87,9 +112,9 @@ async function updateStatus() {
     const result = await callWorker('OFFLINE_STATUS');
     readyOffline = result.ready;
     status.textContent = readyOffline
-      ? 'Сохранено · все 44 страницы доступны без интернета.'
-      : navigator.onLine ? 'Фрагмент ещё не сохранён на этом устройстве.' : 'Подключитесь к интернету, чтобы сохранить фрагмент.';
-    saveButton.textContent = readyOffline ? 'Фрагмент сохранён' : 'Сохранить для офлайн-чтения';
+      ? 'Сохранено · все 44 страницы доступны без интернета.'
+      : navigator.onLine ? 'Фрагмент ещё не сохранён на этом устройстве.' : 'Подключитесь к интернету, чтобы сохранить фрагмент.';
+    saveButton.textContent = readyOffline ? 'Фрагмент сохранён' : 'Сохранить для офлайн-чтения';
     saveButton.disabled = readyOffline || !navigator.onLine;
   } catch (error) {
     status.textContent = error.message;
@@ -119,12 +144,12 @@ saveButton.addEventListener('click', async () => {
   saveButton.textContent = 'Сохраняем…';
   progress.hidden = false;
   progress.value = 0;
-  status.textContent = 'Сохраняем книгу и читалку. Оставьте страницу открытой.';
+  status.textContent = 'Сохраняем книгу и читалку. Оставьте страницу открытой.';
   try {
     await prepareWorker();
     await callWorker('SAVE_OFFLINE', ({done, total}) => {
       progress.value = Math.round(done / total * 100);
-      status.textContent = `Сохраняем книгу и читалку… ${progress.value}%`;
+      status.textContent = `Сохраняем книгу и читалку… ${progress.value}%`;
     });
     // A refusal of persistent storage must not invalidate a successful download.
     try { await navigator.storage?.persist?.(); } catch { /* best effort */ }

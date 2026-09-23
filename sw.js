@@ -1,6 +1,6 @@
-/* Regenerate offline-files.js with scripts/build-craft-reader-pwa.cjs after edits. */
+/* Regenerate offline-files.js with scripts/build-craft-reader-pwa-v4.cjs after edits. */
 importScripts('./offline-files.js');
-const {version, files} = self.CRAFT_OFFLINE;
+const {version, files, migration} = self.CRAFT_OFFLINE;
 const scope = new URL('./', self.location.href);
 const prefix = `craft-reader:${scope.pathname}:`;
 const cacheName = `${prefix}${version}`;
@@ -12,7 +12,21 @@ let saving;
 const progressPorts = new Set();
 
 self.addEventListener('install', event => {
-  event.waitUntil(caches.open(cacheName).then(cache => cache.addAll(shell.map(file => new Request(new URL(file, scope), {cache: 'reload'})))));
+  event.waitUntil((async () => {
+    const cache = await caches.open(cacheName);
+    await cache.addAll(shell.map(file => new Request(new URL(file, scope), {cache: 'reload'})));
+    // Preserve an already saved book; do not download it without the reader's request.
+    const previousName = `${prefix}${migration.fromVersion}`;
+    if ((await caches.keys()).includes(previousName)) {
+      const previous = await caches.open(previousName);
+      for (const file of migration.files) {
+        const url = new URL(file, scope).href;
+        if (await cache.match(url)) continue;
+        const response = await previous.match(url);
+        if (response?.status === 200) await cache.put(url, response);
+      }
+    }
+  })());
 });
 self.addEventListener('activate', event => {
   event.waitUntil((async () => {
@@ -63,7 +77,7 @@ self.addEventListener('message', event => {
       if (!saving) saving = saveAll().finally(() => { saving = null; });
       port.postMessage(await saving);
     } catch {
-      port.postMessage({error: 'Не удалось сохранить фрагмент полностью. Проверьте соединение и свободное место, затем повторите.'});
+      port.postMessage({error: 'Не удалось сохранить фрагмент полностью. Проверьте соединение и свободное место, затем повторите.'});
     } finally { progressPorts.delete(port); port.close(); }
   })());
 });
