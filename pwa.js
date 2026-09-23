@@ -8,20 +8,29 @@ const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform 
 const standalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
 // Use the reader's own address, including inside Tilda; omit page state and query parameters.
 const directUrl = new URL('./', import.meta.url).href;
+// Explicit user-activated handoff; Telegram itself uses this scheme for Safari.
+// Safari/iOS may decline it, so manual copying always remains available.
+const safariUrl = directUrl.startsWith('https://') ? directUrl.replace(/^https:/, 'x-safari-https:') : null;
 $('direct-app').href = directUrl;
 $('reader-url').value = directUrl;
+if (safariUrl) $('open-safari').href = safariUrl;
+else {
+  $('safari-fallback').open = true;
+  $('safari-fallback-title').textContent = 'Как открыть ссылку в Safari';
+}
 let installPrompt, registration, registering, saving = false, readyOffline = false;
 
 function renderInstall() {
   $('install-app').hidden = !installPrompt || standalone() || embedded;
   $('direct-app').hidden = !embedded || ios;
   $('safari-guide').hidden = !ios || standalone();
+  $('open-safari').hidden = !ios || standalone() || !safariUrl;
   $('safari-guide-title').textContent = embedded ? 'Как перейти в Safari' : 'Открыли в Telegram?';
   if (standalone()) {
     $('install-help').textContent = 'Читалка открыта как приложение. Сохраните фрагмент ниже, чтобы читать его без интернета.';
   } else if (ios) {
     $('install-help').textContent = embedded
-      ? 'Для установки откройте читалку в Safari по прямой ссылке. После этого: «Поделиться» → «На экран „Домой“» → «Добавить».'
+      ? 'В Safari: «Поделиться» → «На экран „Домой“» → «Добавить».'
       : 'В Safari нажмите «Поделиться» → «На экран „Домой“» → «Добавить». Затем откройте CRAFT с главного экрана.';
   } else if (embedded) {
     $('install-help').textContent = 'Для установки и офлайн-чтения откройте читалку отдельной страницей в браузере.';

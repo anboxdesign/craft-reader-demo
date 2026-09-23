@@ -11,8 +11,8 @@
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="CRAFT">
-  <link rel="stylesheet" href="reader.css?v=4">
-  <link rel="stylesheet" href="pwa.css?v=4">
+  <link rel="stylesheet" href="reader.css?v=5">
+  <link rel="stylesheet" href="pwa.css?v=5">
   <link rel="stylesheet" href="vendor/pdfjs/text-layer.css">
 </head>
 <body>
@@ -110,13 +110,18 @@
       <a class="primary-button direct-app-link" id="direct-app" href="./" target="_blank" rel="noopener" hidden>Открыть читалку отдельно</a>
       <div class="safari-guide" id="safari-guide" hidden>
         <h4 id="safari-guide-title">Открыли в Telegram?</h4>
-        <p>Если пункта «На экран „Домой“» нет, скопируйте ссылку на читалку. Откройте Safari и вставьте её в адресную строку.</p>
-        <button class="primary-button" id="copy-reader-url">Скопировать ссылку для Safari</button>
-        <p class="app-note" id="copy-status" role="status" aria-live="polite"></p>
-        <div class="manual-reader-url" id="manual-reader-url" hidden>
-          <label for="reader-url">Ссылка на читалку</label>
-          <textarea id="reader-url" rows="3" readonly spellcheck="false" autocapitalize="off" aria-describedby="copy-status"></textarea>
-        </div>
+        <p>Перейдите в Safari, чтобы добавить CRAFT на главный экран.</p>
+        <a class="primary-button direct-app-link" id="open-safari" target="_top" hidden>Открыть в Safari</a>
+        <details class="safari-fallback" id="safari-fallback">
+          <summary id="safari-fallback-title">Safari не открылся?</summary>
+          <p>Скопируйте ссылку, откройте Safari и вставьте её в адресную строку.</p>
+          <button class="primary-button secondary-button" id="copy-reader-url">Скопировать ссылку</button>
+          <p class="app-note" id="copy-status" role="status" aria-live="polite"></p>
+          <div class="manual-reader-url" id="manual-reader-url" hidden>
+            <label for="reader-url">Ссылка на читалку</label>
+            <textarea id="reader-url" rows="3" readonly spellcheck="false" autocapitalize="off" aria-describedby="copy-status"></textarea>
+          </div>
+        </details>
       </div>
     </section>
     <section class="app-section" aria-labelledby="offline-title">
@@ -129,7 +134,7 @@
     </section>
     <p class="app-demo-note">Демо · фрагмент в свободном доступе. Оплата и вход не требуются.</p>
   </dialog>
-  <script src="reader.js?v=4" type="module"></script>
-  <script src="pwa.js?v=4" type="module"></script>
+  <script src="reader.js?v=5" type="module"></script>
+  <script src="pwa.js?v=5" type="module"></script>
 </body>
 </html>

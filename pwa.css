@@ -21,6 +21,11 @@
 .direct-app-link{text-decoration:none}
 .safari-guide{margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}
 .safari-guide h4{margin:0 0 10px;font-size:1rem;font-weight:560;color:var(--purple)}
+.safari-fallback{margin-top:8px}
+.safari-fallback summary{min-height:44px;padding:12px 0;color:var(--purple);cursor:pointer;font-size:.875rem;line-height:1.5;overflow-wrap:anywhere}
+.safari-fallback[open] summary{margin-bottom:8px}
+.app-dialog .secondary-button{background:transparent;color:var(--purple);border:1px solid var(--purple)}
+.app-dialog .secondary-button:hover{background:var(--hover)}
 .app-dialog #copy-status:empty{display:none}
 .manual-reader-url{margin-top:14px}
 .manual-reader-url label{display:block;margin-bottom:8px;font-size:.875rem;color:var(--secondary)}

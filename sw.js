@@ -1,6 +1,6 @@
-/* Regenerate offline-files.js with scripts/build-craft-reader-pwa-v4.cjs after edits. */
+/* Regenerate offline-files.js with scripts/build-craft-reader-pwa-v5.cjs after edits. */
 importScripts('./offline-files.js');
-const {version, files, migration} = self.CRAFT_OFFLINE;
+const {version, files, migrations} = self.CRAFT_OFFLINE;
 const scope = new URL('./', self.location.href);
 const prefix = `craft-reader:${scope.pathname}:`;
 const cacheName = `${prefix}${version}`;
@@ -16,8 +16,10 @@ self.addEventListener('install', event => {
     const cache = await caches.open(cacheName);
     await cache.addAll(shell.map(file => new Request(new URL(file, scope), {cache: 'reload'})));
     // Preserve an already saved book; do not download it without the reader's request.
-    const previousName = `${prefix}${migration.fromVersion}`;
-    if ((await caches.keys()).includes(previousName)) {
+    const existing = await caches.keys();
+    for (const migration of migrations) {
+      const previousName = `${prefix}${migration.fromVersion}`;
+      if (!existing.includes(previousName)) continue;
       const previous = await caches.open(previousName);
       for (const file of migration.files) {
         const url = new URL(file, scope).href;
