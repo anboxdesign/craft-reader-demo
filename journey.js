@@ -1,5 +1,6 @@
 const $ = id => document.getElementById(id);
-const publicReader = 'https://anboxdesign.github.io/craft-reader-demo/open.html';
+const publicReader = 'https://ikraikra.ru/demo';
+const installReader = 'https://anboxdesign.github.io/craft-reader-demo/open.html?v=12';
 const siteMobile = matchMedia('(max-width:639px)');
 let currentPage = 1;
 const openers = new WeakMap();
@@ -14,11 +15,11 @@ for (const dialog of [$('sample-dialog'),$('phone-dialog')]) {
 }
 function updatePurchase() {
   $('buy-book').href = 'https://ikraikra.ru/craft' + (siteMobile.matches ? '#craft-mobile-order-form' : '#order');
-  $('purchase-note').textContent = navigator.onLine ? 'Заказ — на сайте ИКРЫ. Если сайт открылся с начала, нажмите «Купить книгу» в шапке.' : 'Для перехода к форме заказа нужен интернет.';
+  $('purchase-note').textContent = navigator.onLine ? 'Форма заказа откроется на сайте ИКРЫ.' : 'Для перехода к форме заказа нужен интернет.';
 }
 export function updateJourney({page,atEnd}) {
   currentPage = page;
-  $('recover-reader').href = `open.html?v=11#page=${page}`;
+  $('recover-reader').href = `open.html?v=12#page=${page}`;
   document.querySelectorAll('[data-pdf-preview]').forEach(link=>link.href=`pdf.html#page=${page}`);
   $('sample-end').hidden = !atEnd;
   $('reading-hint').hidden = atEnd;
@@ -30,7 +31,7 @@ $('open-phone').addEventListener('click',()=>{
   $('reader-qr').hidden = false;
   $('qr-error').hidden = true;
   $('reader-qr').src = `assets/qr/page-${currentPage}.png`;
-  $('phone-android-link').href = `${publicReader}?install=android#page=${currentPage}`;
+  $('phone-android-link').href = `${installReader}&install=android#page=${currentPage}`;
   $('phone-copy-status').textContent = '';
   open($('phone-dialog'),$('open-phone'));
 });

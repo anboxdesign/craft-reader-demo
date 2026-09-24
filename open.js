@@ -1,4 +1,4 @@
-const RELEASE = 11;
+const RELEASE = 12;
 const status = document.getElementById('entry-status');
 const destination = new URL('./',location.href);
 const install = new URLSearchParams(location.search).get('install');

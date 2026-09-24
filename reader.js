@@ -1,10 +1,19 @@
-import {updateJourney, openSampleEnd} from './journey.js?v=11';
+import {updateJourney, openSampleEnd} from './journey.js?v=12';
 const $ = (id) => document.getElementById(id);
 const els = Object.fromEntries(['book','stage','reader-layout','sidebar','drawer-backdrop','masthead','reading-area','contents-toggle','close-contents','view-toggle','zoom-out','zoom-in','zoom-reset','fullscreen-toggle','page-form','page-number','spread-end','reading-hint','loading-note','error-panel','error-description','retry','announcer'].map(id => [id,$(id)]));
 const TOTAL = 10;
 const PAGE_WIDTH = 1866, PAGE_HEIGHT = 2953;
 const pendingLoads = new Set();
 const STORAGE = 'craft-demo-reader-2676a3c9c706';
+const siteOrigins = ['https://ikraikra.ru','https://ikra-site.tilda.ws'];
+let siteOrigin = null;
+try { const origin = new URL(document.referrer).origin; if (siteOrigins.includes(origin)) siteOrigin = origin; } catch {}
+let sentPage = null;
+function reportPageToSite() {
+  if (parent === window || sentPage === page) return;
+  sentPage = page;
+  if (siteOrigin) parent.postMessage({type:'craft:reader:page',book:'2676a3c9c706',page},siteOrigin);
+}
 const desktop = matchMedia('(min-width:900px)');
 const reducedMotion = matchMedia('(prefers-reduced-motion:reduce)');
 const toc = [...document.querySelectorAll('[data-page]')];
@@ -45,6 +54,7 @@ function updateControls({preservePageInput = false} = {}) {
   }
   els['reading-hint'].textContent = last === TOTAL ? 'Демоверсия прочитана.' : desktop.matches ? 'Листайте стрелками на клавиатуре' : zoom > 1 ? 'Двигайте страницу, чтобы рассмотреть детали' : 'Листайте свайпом влево или вправо';
   updateJourney({page, atEnd:last === TOTAL && bookReady});
+  reportPageToSite();
   document.title = `${first}${last !== first ? `–${last}` : ''} / ${TOTAL} — Фиолетовый CRAFT`;
 }
 
@@ -193,6 +203,12 @@ els['page-form'].addEventListener('submit',event => {
 });
 els.retry.addEventListener('click',() => render());
 window.addEventListener('hashchange',() => {const target = hashPage();if (target && target !== page) navigate(target,{history:false});});
+window.addEventListener('message',event => {
+  if (parent === window || event.source !== parent || !siteOrigins.includes(event.origin)) return;
+  if (event.data?.type !== 'craft:reader:navigate' || event.data.book !== '2676a3c9c706') return;
+  const target = validPage(event.data.page);
+  if (target && target !== page) navigate(target);
+});
 window.addEventListener('popstate',event => {
   const target = hashPage() || validPage(event.state?.craftReaderPage);
   if (target && target !== page) navigate(target,{history:false});

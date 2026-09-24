@@ -9,7 +9,7 @@ const android = /Android/i.test(navigator.userAgent);
 let androidMode = android || new URLSearchParams(location.search).get('install') === 'android';
 const standalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
 // Enter through the update page, including from Tilda; forward only the book page and chosen guide.
-const directUrl = new URL('./open.html?v=11', import.meta.url).href;
+const directUrl = new URL('./open.html?v=12', import.meta.url).href;
 function currentPage() {
   const hash = new URLSearchParams(location.hash.slice(1)).get('page');
   let value = hash;
