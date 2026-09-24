@@ -1,6 +1,6 @@
-import {updateJourney, openSampleEnd} from './journey.js?v=10';
+import {updateJourney, openSampleEnd} from './journey.js?v=11';
 const $ = (id) => document.getElementById(id);
-const els = Object.fromEntries(['book','stage','reader-layout','sidebar','drawer-backdrop','masthead','reading-area','contents-toggle','close-contents','view-toggle','zoom-out','zoom-in','zoom-reset','fullscreen-toggle','previous','next','page-form','page-number','spread-end','page-progress','current-section','reading-hint','loading-note','error-panel','error-description','retry','announcer'].map(id => [id,$(id)]));
+const els = Object.fromEntries(['book','stage','reader-layout','sidebar','drawer-backdrop','masthead','reading-area','contents-toggle','close-contents','view-toggle','zoom-out','zoom-in','zoom-reset','fullscreen-toggle','page-form','page-number','spread-end','reading-hint','loading-note','error-panel','error-description','retry','announcer'].map(id => [id,$(id)]));
 const TOTAL = 10;
 const PAGE_WIDTH = 1866, PAGE_HEIGHT = 2953;
 const pendingLoads = new Set();
@@ -28,19 +28,13 @@ function updateControls({preservePageInput = false} = {}) {
   const pages = visiblePages(), first = pages[0], last = pages.at(-1);
   if (!preservePageInput || document.activeElement !== els['page-number']) els['page-number'].value = String(first);
   els['spread-end'].textContent = last !== first ? `–${last}` : '';
-  els['page-progress'].value = first;
-  els['page-progress'].setAttribute('aria-valuetext', `Страница ${first} из ${TOTAL}`);
-  els['previous'].disabled = !bookReady || first <= 1;
-  els['next'].disabled = !bookReady;
-  els['previous'].setAttribute('aria-label', isSpread() ? 'Предыдущий разворот' : 'Предыдущая страница');
-  els['next'].setAttribute('aria-label', last === TOTAL ? 'Завершить фрагмент' : isSpread() ? 'Следующий разворот' : 'Следующая страница');
+  els['page-number'].disabled = !bookReady;
   els['zoom-out'].disabled = !bookReady || zoom <= .75;
   els['zoom-in'].disabled = !bookReady || zoom >= 3;
   els['zoom-reset'].disabled = !bookReady;
   els['zoom-reset'].textContent = `${Math.round(zoom*100)}%`;
   els['view-toggle'].disabled = !bookReady;
   els['view-toggle'].setAttribute('aria-pressed', String(isSpread()));
-  els['page-number'].disabled = els['page-progress'].disabled = !bookReady;
   els.stage.classList.toggle('is-zoomed',zoom > 1);
   let active = null;
   for (const link of toc) if (Number(link.dataset.page) <= page) active = link;
@@ -49,9 +43,7 @@ function updateControls({preservePageInput = false} = {}) {
     link.classList.toggle('is-current', selected);
     if (selected) link.setAttribute('aria-current','location'); else link.removeAttribute('aria-current');
   }
-  const title = 'Как придумать живой бренд';
-  els['current-section'].textContent = title;
-  els['reading-hint'].textContent = last === TOTAL ? 'Конец фрагмента. Спасибо за чтение.' : desktop.matches ? 'Листайте стрелками на клавиатуре' : zoom > 1 ? 'Двигайте страницу, чтобы рассмотреть детали' : 'Листайте свайпом или стрелками';
+  els['reading-hint'].textContent = last === TOTAL ? 'Демоверсия прочитана.' : desktop.matches ? 'Листайте стрелками на клавиатуре' : zoom > 1 ? 'Двигайте страницу, чтобы рассмотреть детали' : 'Листайте свайпом влево или вправо';
   updateJourney({page, atEnd:last === TOTAL && bookReady});
   document.title = `${first}${last !== first ? `–${last}` : ''} / ${TOTAL} — Фиолетовый CRAFT`;
 }
@@ -129,7 +121,7 @@ async function render({resetScroll = false,motion = false} = {}) {
         const article = document.createElement('article');
         article.className = 'pdf-page';
         article.dataset.page = number;
-        article.setAttribute('aria-label',`Страница фрагмента ${number} из ${TOTAL}`);
+        article.setAttribute('aria-label',`Страница книги ${number} из ${TOTAL}`);
         article.style.width = PAGE_WIDTH*scale + 'px';
         article.style.height = PAGE_HEIGHT*scale + 'px';
         article.append(images[index]);
@@ -143,7 +135,7 @@ async function render({resetScroll = false,motion = false} = {}) {
     els.stage.setAttribute('aria-busy','false');
     if (resetScroll) { els.stage.scrollTop = 0; els.stage.scrollLeft = 0; }
     if (motion && !reducedMotion.matches) els.book.animate([{clipPath:'inset(0 0 0 3%)'},{clipPath:'inset(0 0 0 0)'}],{duration:180,easing:'cubic-bezier(.16,1,.3,1)'});
-    announce(`Страниц${pages.length > 1 ? 'ы' : 'а'} ${pages.join('–')} из ${TOTAL}. ${els['current-section'].textContent}.`);
+    announce(`Страниц${pages.length > 1 ? 'ы' : 'а'} ${pages.join('–')} из ${TOTAL}.`);
   } catch(error) {
     if (ticket !== revision || error.name === 'AbortError') return;
     cancelRender();
@@ -188,16 +180,17 @@ toc.forEach(link => link.addEventListener('click',event => {
   navigate(Number(link.dataset.page));
   if (!desktop.matches) setSidebar(false,true);
 }));
-els.previous.addEventListener('click',() => turn(-1));
-els.next.addEventListener('click',() => turn(1));
 els['zoom-in'].addEventListener('click',() => setZoom(zoom+.25));
 els['zoom-out'].addEventListener('click',() => setZoom(zoom-.25));
 els['zoom-reset'].addEventListener('click',() => setZoom(1));
 els['view-toggle'].addEventListener('click',() => {preferSpread = !preferSpread;updateControls();render({resetScroll:true});});
 els['page-number'].addEventListener('input',() => els['page-number'].setCustomValidity(''));
-els['page-form'].addEventListener('submit',event => {event.preventDefault();navigate(Number(els['page-number'].value));els['page-number'].blur();});
-els['page-progress'].addEventListener('input',() => els['page-progress'].setAttribute('aria-valuetext',`Страница ${els['page-progress'].value} из ${TOTAL}`));
-els['page-progress'].addEventListener('change',() => navigate(Number(els['page-progress'].value)));
+els['page-form'].addEventListener('submit',event => {
+  event.preventDefault();
+  const target = Number(els['page-number'].value);
+  navigate(target);
+  if (validPage(target) && els['page-form'].contains(document.activeElement)) document.activeElement.blur();
+});
 els.retry.addEventListener('click',() => render());
 window.addEventListener('hashchange',() => {const target = hashPage();if (target && target !== page) navigate(target,{history:false});});
 window.addEventListener('popstate',event => {

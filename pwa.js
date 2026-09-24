@@ -9,7 +9,7 @@ const android = /Android/i.test(navigator.userAgent);
 let androidMode = android || new URLSearchParams(location.search).get('install') === 'android';
 const standalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
 // Enter through the update page, including from Tilda; forward only the book page and chosen guide.
-const directUrl = new URL('./open.html', import.meta.url).href;
+const directUrl = new URL('./open.html?v=11', import.meta.url).href;
 function currentPage() {
   const hash = new URLSearchParams(location.hash.slice(1)).get('page');
   let value = hash;
@@ -77,12 +77,14 @@ function dismissHint() {
 
 function renderInstall() {
   syncLinks();
+  $('open-app').setAttribute('aria-label', standalone() ? 'Приложение: чтение без интернета' : 'Установить приложение');
+  $('open-app').querySelector('span').textContent = standalone() ? 'Приложение' : 'Установить приложение';
   $('android-instructions').hidden = !androidMode || ios || standalone();
   $('show-android-guide').hidden = androidMode || ios || standalone();
   $('android-link').hidden = embedded;
-  $('install-title').textContent = androidMode && !ios ? 'Установить на Android' : 'На главном экране';
-  $('install-app').textContent = android ? 'Установить на Android' : 'Установить приложение';
-  $('direct-app').textContent = android ? 'Открыть для Android' : 'Открыть читалку отдельно';
+  $('install-title').textContent = androidMode && !ios ? 'Установить на Android' : 'Установить приложение';
+  $('install-app').textContent = 'Установить приложение';
+  $('direct-app').textContent = 'Перейти к установке';
   $('install-app').hidden = !installPrompt || standalone() || embedded;
   $('direct-app').hidden = !embedded || ios;
   if (standalone()) guideMode = false;
@@ -92,23 +94,23 @@ function renderInstall() {
   $('replay-install-guide').hidden = guideMode || android || standalone();
   $('install-nudge').hidden = !ios || standalone() || hintDismissed;
   document.querySelector('.app-intro').textContent = guideMode
-    ? 'Три шага — и CRAFT на главном экране.'
-    : 'Читайте фрагмент книги с главного экрана — в том числе без интернета.';
+    ? 'Установим приложение CRAFT за три шага.'
+    : 'Читайте книгу в приложении — даже без интернета.';
   $('open-safari').hidden = !ios || standalone() || !safariUrl;
   if (standalone()) {
-    $('install-help').textContent = 'Читалка открыта как приложение. Сохраните фрагмент ниже, чтобы читать его без интернета.';
+    $('install-help').textContent = 'Сохраните книгу, чтобы читать без интернета.';
   } else if (ios) {
     $('install-help').textContent = embedded
       ? 'В Safari: «Поделиться» → «На экран „Домой“» → «Добавить».'
-      : 'В Safari нажмите «Поделиться» → «На экран „Домой“» → «Добавить». Затем откройте CRAFT с главного экрана.';
+      : 'В Safari нажмите «Поделиться» → «На экран „Домой“» → «Добавить». Затем откройте приложение CRAFT.';
   } else if (embedded) {
-    $('install-help').textContent = 'Для установки и офлайн-чтения откройте читалку отдельной страницей в браузере.';
+    $('install-help').textContent = 'Перейдите по ссылке ниже, чтобы установить приложение.';
   } else {
     $('install-help').textContent = installPrompt
-      ? 'Установите CRAFT, чтобы открывать книгу с главного экрана.'
+      ? 'Установите приложение CRAFT.'
       : 'В Chrome или Edge откройте меню браузера и выберите «Установить приложение» или «Добавить на главный экран». Название пункта зависит от браузера.';
   }
-  if (androidMode && !ios && !standalone()) $('install-help').textContent = embedded ? 'Откройте ссылку ниже в Chrome на телефоне, чтобы установить читалку.' : 'Читалка устанавливается на главный экран через Chrome.';
+  if (androidMode && !ios && !standalone()) $('install-help').textContent = embedded ? 'Откройте ссылку ниже в Chrome на телефоне.' : 'Установите приложение через Chrome.';
   renderGuide();
 }
 
@@ -133,7 +135,7 @@ $('copy-reader-url').addEventListener('click', async () => {
 function callWorker(type, onProgress) {
   return new Promise((resolve, reject) => {
     const worker = registration?.active;
-    if (!worker) return reject(new Error('Читалка ещё готовится. Попробуйте через несколько секунд.'));
+    if (!worker) return reject(new Error('Приложение ещё готовится. Попробуйте через несколько секунд.'));
     const channel = new MessageChannel();
     let timer;
     const close = () => { clearTimeout(timer); channel.port1.close(); };
@@ -167,7 +169,7 @@ async function prepareWorker() {
         const cleanup = () => { clearTimeout(timer); worker?.removeEventListener('statechange', check); };
         const check = () => {
           if (candidate.active) { cleanup(); resolve(); }
-          else if (!worker || worker.state === 'redundant') { cleanup(); reject(new Error('Не удалось загрузить читалку для офлайн-режима. Повторите попытку.')); }
+          else if (!worker || worker.state === 'redundant') { cleanup(); reject(new Error('Не удалось подготовить приложение. Повторите попытку.')); }
         };
         worker?.addEventListener('statechange', check);
         check();
@@ -182,7 +184,7 @@ async function prepareWorker() {
 async function updateStatus() {
   if (saving) return;
   if (embedded) {
-    status.textContent = 'Сохранение доступно в отдельно открытой читалке.';
+    status.textContent = 'Перейдите к установке, чтобы сохранить книгу.';
     saveButton.hidden = true;
     return;
   }
@@ -196,9 +198,9 @@ async function updateStatus() {
     const result = await callWorker('OFFLINE_STATUS');
     readyOffline = result.ready;
     status.textContent = readyOffline
-      ? 'Сохранено · все 10 страниц доступны без интернета.'
-      : navigator.onLine ? 'Фрагмент ещё не сохранён на этом устройстве.' : 'Подключитесь к интернету, чтобы сохранить фрагмент.';
-    saveButton.textContent = readyOffline ? 'Фрагмент сохранён' : 'Сохранить для офлайн-чтения';
+      ? 'Сохранено · можно читать без интернета.'
+      : navigator.onLine ? 'Книга ещё не сохранена.' : 'Подключитесь к интернету, чтобы сохранить книгу.';
+    saveButton.textContent = readyOffline ? 'Книга сохранена' : 'Сохранить книгу';
     saveButton.disabled = readyOffline || !navigator.onLine;
   } catch (error) {
     status.textContent = error.message;
@@ -244,12 +246,12 @@ saveButton.addEventListener('click', async () => {
   saveButton.textContent = 'Сохраняем…';
   progress.hidden = false;
   progress.value = 0;
-  status.textContent = 'Сохраняем книгу и читалку. Оставьте страницу открытой.';
+  status.textContent = 'Сохраняем книгу. Оставьте страницу открытой.';
   try {
     await prepareWorker();
     await callWorker('SAVE_OFFLINE', ({done, total}) => {
       progress.value = Math.round(done / total * 100);
-      status.textContent = `Сохраняем книгу и читалку… ${progress.value}%`;
+      status.textContent = `Сохраняем книгу… ${progress.value}%`;
     });
     // A refusal of persistent storage must not invalidate a successful download.
     try { await navigator.storage?.persist?.(); } catch { /* best effort */ }

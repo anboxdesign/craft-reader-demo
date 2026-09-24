@@ -1,4 +1,4 @@
-const RELEASE = 10;
+const RELEASE = 11;
 const status = document.getElementById('entry-status');
 const destination = new URL('./',location.href);
 const install = new URLSearchParams(location.search).get('install');
@@ -21,13 +21,13 @@ async function start() {
   if (opening) return;
   opening=true;
   document.getElementById('entry-error').hidden=true;
-  status.textContent='Проверяем читалку. Книга откроется на нужной странице.';
+  status.textContent='Открываем приложение CRAFT…';
   try {
     if (!('serviceWorker' in navigator)) {location.replace(destination.href);return;}
     // open.html is outside the legacy worker's cached index route.
     const existing=await navigator.serviceWorker.getRegistration(new URL('./',location.href).href);
     if (existing?.active?.state === 'activated' && await releaseOf(existing.active) >= RELEASE) {location.replace(destination.href);return;}
-    status.textContent='Обновляем читалку. Сохранённая книга и место чтения останутся на устройстве.';
+    status.textContent='Обновляем приложение CRAFT…';
     const registration=await navigator.serviceWorker.register('./sw.js',{scope:'./',updateViaCache:'none'});
     await registration.update();
     const deadline=Date.now()+45000;

@@ -4,23 +4,23 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#584193">
-  <meta name="description" content="Читайте фрагмент книги «Фиолетовый CRAFT»: фрагмент главы Василия Лебедева «Как придумать живой бренд».">
-  <title>Читать фрагмент — Фиолетовый CRAFT</title>
+  <meta name="description" content="Приложение CRAFT. Демоверсия книги «Фиолетовый CRAFT».">
+  <title>Читать книгу — Фиолетовый CRAFT</title>
   <link rel="icon" href="assets/ikra-logo.png">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="CRAFT">
-  <link rel="stylesheet" href="reader.css?v=10">
-  <link rel="stylesheet" href="pwa.css?v=10">
-  <link rel="stylesheet" href="journey.css?v=10">
+  <link rel="stylesheet" href="reader.css?v=11">
+  <link rel="stylesheet" href="pwa.css?v=11">
+  <link rel="stylesheet" href="journey.css?v=11">
 
 </head>
 <body>
   <!-- THESIS: The original book is the reading surface. Its pages lead immediately.
   OWN-WORLD: CRAFT purple, white paper, Onest, Roboto Mono, the supplied IKRA logo.
   STORY: Open the real sample, read sequentially or jump to a step, enlarge and return.
-  FIRST VIEWPORT: Quiet masthead, contents at left, original two-page spread in the remaining field, controls below. Mobile shows one page with collapsible contents.
+  FIRST VIEWPORT: Quiet masthead, contents at left, original two-page spread in the remaining field, controls above. Mobile shows one page with collapsible contents.
   FORM: User-confirmed original PDF pages, code-led extension of the established CRAFT world; no concept seed required for this specified reader.
   FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance -->
   <a class="skip-link" href="#reading-area">К чтению</a>
@@ -41,17 +41,15 @@
   </svg>
 
   <header class="masthead" id="masthead">
-    <a class="brand" href="#page=1" aria-label="Икра — к началу фрагмента"><span class="brand-mark" aria-hidden="true"></span></a>
-    <div class="book-title"><h1>Фиолетовый <span>CRAFT</span></h1><p>Фрагмент книги <span aria-hidden="true">·</span> 10 страниц</p></div>
+    <a class="brand" href="#page=1" aria-label="Икра — к началу книги"><span class="brand-mark" aria-hidden="true"></span></a>
+    <div class="book-title"><h1>Фиолетовый <span>CRAFT</span></h1><p>Демоверсия <span aria-hidden="true">·</span> 10 страниц</p></div>
     <div class="masthead-actions">
-      <button class="app-button phone-button" id="open-phone" aria-haspopup="dialog" aria-controls="phone-dialog"><svg class="icon" aria-hidden="true"><use href="#i-app"/></svg><span>На телефон</span></button>
-      <button class="app-button" id="open-app" aria-haspopup="dialog" aria-controls="app-dialog" aria-label="Установка приложения и офлайн-чтение"><svg class="icon" aria-hidden="true"><use href="#i-app"/></svg><span>Приложение</span></button>
-      <a class="download-link" href="pdf.html#page=1" data-pdf-preview aria-label="Открыть PDF с кнопкой возврата"><svg class="icon"><use href="#i-download"/></svg><span>PDF</span><small>18,5 МБ</small></a>
+      <button class="app-button" id="open-app" aria-haspopup="dialog" aria-controls="app-dialog" aria-label="Установить приложение"><svg class="icon" aria-hidden="true"><use href="#i-app"/></svg><span>Установить приложение</span></button>
     </div>
   </header>
 
-  <aside class="install-nudge" id="install-nudge" aria-label="Установка читалки" hidden>
-    <button id="show-install-guide"><svg class="icon" aria-hidden="true"><use href="#i-app"/></svg><span>Книга на главном экране<small>Показать, как установить</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+  <aside class="install-nudge" id="install-nudge" aria-label="Установка приложения" hidden>
+    <button id="show-install-guide"><svg class="icon" aria-hidden="true"><use href="#i-app"/></svg><span>Приложение CRAFT<small>Как установить</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>
     <button class="icon-button" id="dismiss-install-guide" aria-label="Скрыть подсказку установки"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
   </aside>
 
@@ -59,7 +57,7 @@
     <div class="drawer-backdrop" id="drawer-backdrop" hidden></div>
     <aside class="sidebar" id="sidebar" aria-labelledby="contents-title">
       <div class="sidebar-heading"><h2 id="contents-title">Содержание</h2><button class="icon-button" id="close-contents" aria-label="Закрыть содержание" title="Закрыть содержание"><svg class="icon"><use href="#i-close"/></svg></button></div>
-      <nav class="contents" aria-label="Разделы фрагмента">
+      <nav class="contents" aria-label="Разделы книги">
         <div class="chapter-group">
           <a href="#page=1" data-page="1" class="contents-link chapter-link"><span>Как придумать<br>живой бренд<small>Василий Лебедев</small></span><span class="folio">1</span></a>
           <a href="#page=2" data-page="2" class="contents-link sub-link"><span>Зачем вам CRAFT<br>для бренд-платформы</span><span class="folio">2</span></a>
@@ -71,11 +69,11 @@
       </nav>
     </aside>
 
-    <main class="reader" id="reading-area" tabindex="-1" aria-label="Читалка фрагмента книги">
+    <main class="reader" id="reading-area" tabindex="-1" aria-label="Чтение книги">
       <div class="toolbar" role="group" aria-label="Настройки чтения">
         <button class="text-button contents-toggle" id="contents-toggle" aria-controls="sidebar" aria-expanded="true"><svg class="icon"><use href="#i-list"/></svg><span>Содержание</span></button>
-        <div class="toolbar-divider"></div>
-        <p class="current-section" id="current-section">Как придумать живой бренд</p>
+        <form class="page-form" id="page-form"><label class="sr-only" for="page-number">Страница</label><div><input id="page-number" type="text" inputmode="numeric" pattern="[0-9]+" value="1" aria-label="Перейти на страницу книги, от 1 до 10" autocomplete="off" disabled><span id="spread-end"></span><span class="page-total">/ 10</span></div><button class="page-go" type="submit">Перейти</button></form>
+        <button class="sample-end-button" id="sample-end" aria-haspopup="dialog" aria-controls="sample-dialog" hidden>Купить книгу</button>
         <div class="view-controls">
           <button class="icon-button view-toggle" id="view-toggle" aria-label="Показывать разворот" aria-pressed="true" title="Разворот / одна страница" disabled><svg class="icon"><use href="#i-spread"/></svg></button>
           <div class="zoom-controls" role="group" aria-label="Масштаб">
@@ -87,37 +85,30 @@
         </div>
       </div>
 
-      <div class="stage" id="stage" aria-busy="true" tabindex="0" aria-label="Страницы книги. Для листания используйте стрелки влево и вправо.">
+      <div class="stage" id="stage" aria-busy="true" tabindex="0" aria-label="Страницы книги. Листайте свайпом вбок или стрелками на клавиатуре. Перейти к нужной странице можно по номеру вверху.">
         <div class="book-mat"><div class="book" id="book"></div></div>
         <div class="loading-note" id="loading-note" role="status"><span class="loading-line" aria-hidden="true"></span><p>Открываем книгу…</p></div>
-        <section class="error-panel" id="error-panel" hidden aria-labelledby="error-title"><h2 id="error-title">Книга не загрузилась</h2><p id="error-description">Проверьте соединение и попробуйте ещё раз.</p><div><button class="primary-button" id="retry"><svg class="icon"><use href="#i-reset"/></svg>Попробовать ещё раз</button><a href="open.html" id="recover-reader">Обновить читалку</a><a href="pdf.html#page=1" data-pdf-preview>Открыть PDF</a></div></section>
+        <section class="error-panel" id="error-panel" hidden aria-labelledby="error-title"><h2 id="error-title">Книга не загрузилась</h2><p id="error-description">Проверьте соединение и попробуйте ещё раз.</p><div><button class="primary-button" id="retry"><svg class="icon"><use href="#i-reset"/></svg>Попробовать ещё раз</button><a href="open.html" id="recover-reader">Обновить приложение</a><a href="pdf.html#page=1" data-pdf-preview>Открыть PDF</a></div></section>
       </div>
 
-      <footer class="reader-footer">
-        <div class="footer-row">
-          <form class="page-form" id="page-form"><label for="page-number">Страница</label><div><input id="page-number" type="text" inputmode="numeric" pattern="[0-9]+" value="1" aria-label="Перейти на страницу фрагмента, от 1 до 10" autocomplete="off" disabled><span id="spread-end"></span><span class="page-total">/ 10</span></div></form>
-          <div class="paging-controls" role="group" aria-label="Листание страниц"><button class="paging-button" id="previous" aria-label="Предыдущая страница" disabled><svg class="icon reverse"><use href="#i-arrow"/></svg></button><button class="paging-button next-button" id="next" aria-label="Следующая страница" disabled><svg class="icon"><use href="#i-arrow"/></svg></button></div>
-          <button class="sample-end-button" id="sample-end" aria-haspopup="dialog" aria-controls="sample-dialog" hidden>Фрагмент прочитан →</button>
-          <p class="reading-hint" id="reading-hint">Листайте стрелками на клавиатуре</p>
-        </div>
-        <label class="sr-only" for="page-progress">Перейти на страницу фрагмента</label><input class="page-progress" id="page-progress" type="range" min="1" max="10" value="1" aria-valuetext="Страница 1 из 10" disabled>
-      </footer>
+      <p class="sr-only" id="reading-hint">Листайте свайпом влево или вправо.</p>
       <p class="sr-only" id="announcer" aria-live="polite" aria-atomic="true"></p>
     </main>
   </div>
   <noscript><div class="noscript-panel">Для читалки нужен JavaScript. <a href="pdf.html#page=1">Откройте просмотр PDF</a>.</div></noscript>
   <dialog class="app-dialog" id="app-dialog" aria-labelledby="app-title">
-    <div class="app-dialog-heading"><h2 id="app-title">CRAFT с собой</h2><button class="icon-button" id="close-app" aria-label="Закрыть окно приложения"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
-    <p class="app-intro">Читайте фрагмент книги с главного экрана — в том числе без интернета.</p>
+    <div class="app-dialog-heading"><h2 id="app-title">Приложение CRAFT</h2><button class="icon-button" id="close-app" aria-label="Закрыть окно приложения"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
+    <p class="app-intro">Читайте книгу в приложении — даже без интернета.</p>
+    <button class="guide-text-button phone-button" id="open-phone" aria-haspopup="dialog" aria-controls="phone-dialog">Открыть на телефоне — QR-код</button>
     <div class="platform-guides" role="group" aria-label="Инструкции установки на телефон"><button class="guide-text-button" id="show-android-guide">Установка на Android</button><button class="guide-text-button" id="replay-install-guide">Установка на iPhone</button></div>
     <section class="app-section" id="generic-install" aria-labelledby="install-title">
-      <h3 id="install-title">На главном экране</h3>
+      <h3 id="install-title">Установить приложение</h3>
       <p id="install-help">Откройте меню браузера и выберите «Установить приложение» или «Добавить на главный экран».</p>
       <button class="primary-button" id="install-app" hidden>Установить приложение</button>
-      <a class="primary-button direct-app-link" id="direct-app" href="./" target="_blank" rel="noopener" hidden>Открыть читалку отдельно</a>
+      <a class="primary-button direct-app-link" id="direct-app" href="./" target="_blank" rel="noopener" hidden>Перейти к установке</a>
       <div id="android-instructions" hidden>
         <a class="primary-button secondary-button direct-app-link" id="android-link" href="open.html?install=android" target="_blank" rel="noopener">Прямая ссылка для Android</a>
-        <ol class="android-steps"><li>Откройте читалку в Chrome на телефоне.</li><li>Нажмите «Установить на Android», если кнопка доступна. Или откройте меню ⋮ → «Добавить на главный экран» → «Установить».</li><li>Откройте значок CRAFT. В разделе «Приложение» сохраните фрагмент для чтения без интернета.</li></ol>
+        <ol class="android-steps"><li>Откройте ссылку в Chrome на телефоне.</li><li>Нажмите «Установить приложение», если кнопка доступна. Или откройте меню ⋮ → «Добавить на главный экран» → «Установить».</li><li>Откройте приложение CRAFT и сохраните книгу для чтения без интернета.</li></ol>
         <p class="app-note">Если ссылка открылась внутри Telegram, в его меню выберите открытие в браузере и перейдите в Chrome. Названия пунктов зависят от версии браузера.</p>
       </div>
     </section>
@@ -141,7 +132,7 @@
           <button class="primary-button secondary-button" id="copy-reader-url">Скопировать ссылку</button>
           <p class="app-note" id="copy-status" role="status" aria-live="polite"></p>
           <div class="manual-reader-url" id="manual-reader-url" hidden>
-            <label for="reader-url">Ссылка на читалку</label>
+            <label for="reader-url">Ссылка на приложение</label>
             <textarea id="reader-url" rows="3" readonly spellcheck="false" autocapitalize="off" aria-describedby="copy-status"></textarea>
           </div>
         </details>
@@ -156,14 +147,14 @@
         <p class="app-note">Если сверху остались кнопки Telegram, вернитесь к шагу 1.</p>
       </article>
       <article class="guide-step" data-guide-step="2" hidden>
-        <h3 tabindex="-1">Поселим книгу на экране</h3>
+        <h3 tabindex="-1">Установим приложение</h3>
         <div class="comic-scene" aria-hidden="true">
           <div class="comic-character comic-character-third"><img src="assets/install-characters-v1.png" width="2135" height="736" alt=""></div>
           <div class="comic-home"><div class="comic-menu-row"><svg class="icon"><use href="#i-home-add"/></svg><span>На экран<br>«Домой»</span></div><div class="comic-home-icon"><img src="icons/icon-192.png" width="64" height="64" alt=""><span>CRAFT</span></div></div>
         </div>
         <p>Прокрутите меню вниз, выберите «На экран „Домой“» и нажмите «Добавить». Если есть переключатель «Открыть как веб-приложение», включите его.</p>
         <details class="guide-trouble"><summary>Не вижу нужного пункта</summary><p>Убедитесь, что вы в Safari. Затем внизу меню «Поделиться» нажмите «Редактировать действия» и найдите «На экран „Домой“».</p></details>
-        <p class="app-note">После установки откройте значок CRAFT. Чтобы читать без интернета, сохраните фрагмент в окне «Приложение».</p>
+        <p class="app-note">После установки откройте приложение CRAFT и сохраните книгу для чтения без интернета.</p>
       </article>
       <div class="guide-actions">
         <button class="guide-back" id="guide-back" hidden>Назад</button>
@@ -174,17 +165,17 @@
     </section>
     <section class="app-section" id="offline-section" aria-labelledby="offline-title">
       <h3 id="offline-title" tabindex="-1">Без интернета</h3>
-      <p>Сохраните все 10 страниц и читалку на этом устройстве. Место чтения сохраняется автоматически.</p>
+      <p>Сохраните книгу на устройство. Место чтения сохранится.</p>
       <p class="offline-status" id="offline-status" role="status" aria-live="polite">Проверяем сохранённую копию…</p>
       <progress id="offline-progress" aria-label="Сохранение для офлайн-чтения" max="100" value="0" hidden></progress>
-      <button class="primary-button" id="save-offline" disabled>Сохранить для офлайн-чтения</button>
-      <p class="app-note" id="offline-note">После установки откройте приложение и сохраните фрагмент в нём. Если очистить данные браузера, потребуется сохранить его снова.</p>
+      <button class="primary-button" id="save-offline" disabled>Сохранить книгу</button>
+      <p class="app-note" id="offline-note">После установки сохраните книгу внутри приложения.</p>
     </section>
-    <p class="app-note" id="update-note" hidden>Доступна новая версия. <a id="update-reader" href="open.html">Обновить читалку</a></p>
-    <p class="app-demo-note">Демо · фрагмент в свободном доступе. Оплата и вход не требуются.</p>
+    <p class="app-note" id="update-note" hidden>Доступна новая версия. <a id="update-reader" href="open.html">Обновить приложение</a></p>
+    <p class="app-demo-note">Демоверсия · 10 страниц книги.</p>
   </dialog>
   <dialog class="app-dialog" id="sample-dialog" aria-labelledby="sample-title">
-    <div class="app-dialog-heading"><h2 id="sample-title">Это конец фрагмента</h2><button class="icon-button" data-close-dialog aria-label="Закрыть окно"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
+    <div class="app-dialog-heading"><h2 id="sample-title">Демоверсия прочитана</h2><button class="icon-button" data-close-dialog aria-label="Закрыть окно"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
     <p class="app-intro">Вы прочитали 10 страниц «Фиолетового CRAFT». Продолжение — в полной версии книги.</p>
     <a class="primary-button" id="buy-book" href="https://ikraikra.ru/craft#order" target="_blank" rel="noopener">Купить полную версию</a>
     <p class="app-note" id="purchase-note">Откроется форма заказа на сайте ИКРЫ.</p>
@@ -199,10 +190,10 @@
     <textarea id="phone-link" rows="3" readonly spellcheck="false" autocapitalize="off"></textarea>
     <button class="primary-button" id="copy-phone-link">Скопировать ссылку</button>
     <p class="app-note" id="phone-copy-status" role="status"></p>
-    <p class="app-note">Эта ссылка работает на Android и iPhone. На телефоне нажмите «Приложение», чтобы добавить книгу на главный экран.</p>
+    <p class="app-note">Эта ссылка работает на Android и iPhone. На телефоне можно установить приложение.</p>
     <a class="guide-text-button" id="phone-android-link" href="open.html?install=android" target="_blank" rel="noopener">Открыть установку для Android</a>
   </dialog>
-  <script src="reader.js?v=10" type="module"></script>
-  <script src="pwa.js?v=10" type="module"></script>
+  <script src="reader.js?v=11" type="module"></script>
+  <script src="pwa.js?v=11" type="module"></script>
 </body>
 </html>

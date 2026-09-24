@@ -18,12 +18,12 @@ function updatePurchase() {
 }
 export function updateJourney({page,atEnd}) {
   currentPage = page;
-  $('recover-reader').href = `open.html#page=${page}`;
+  $('recover-reader').href = `open.html?v=11#page=${page}`;
   document.querySelectorAll('[data-pdf-preview]').forEach(link=>link.href=`pdf.html#page=${page}`);
   $('sample-end').hidden = !atEnd;
   $('reading-hint').hidden = atEnd;
 }
-export function openSampleEnd(opener = $('next')) {updatePurchase();open($('sample-dialog'),opener);}
+export function openSampleEnd(opener = $('stage')) {updatePurchase();open($('sample-dialog'),opener);}
 $('sample-end').addEventListener('click',()=>openSampleEnd($('sample-end')));
 $('open-phone').addEventListener('click',()=>{
   $('phone-link').value = `${publicReader}#page=${currentPage}`;

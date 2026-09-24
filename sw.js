@@ -1,4 +1,4 @@
-/* Regenerate offline-files.js with scripts/build-craft-reader-pwa-v10.cjs after edits. */
+/* Regenerate offline-files.js with scripts/build-craft-reader-pwa-v11.cjs after edits. */
 importScripts('./offline-files.js');
 const {version, files, migrations} = self.CRAFT_OFFLINE;
 const scope = new URL('./', self.location.href);
@@ -71,7 +71,7 @@ async function saveAll() {
 
 self.addEventListener('message', event => {
   const port = event.ports[0];
-  if (event.data?.type === 'GET_RELEASE' && port) {port.postMessage({release:10,version});port.close();return;}
+  if (event.data?.type === 'GET_RELEASE' && port) {port.postMessage({release:11,version});port.close();return;}
   if (event.data?.type === 'ACTIVATE_UPDATE') {
     // Only the explicit entry/update page can activate a waiting release.
     const source = event.source?.url ? new URL(event.source.url) : null;
@@ -86,7 +86,7 @@ self.addEventListener('message', event => {
       if (!saving) saving = saveAll().finally(() => { saving = null; });
       port.postMessage(await saving);
     } catch {
-      port.postMessage({error: 'Не удалось сохранить фрагмент полностью. Проверьте соединение и свободное место, затем повторите.'});
+      port.postMessage({error: 'Не удалось сохранить книгу. Проверьте соединение и свободное место, затем повторите.'});
     } finally { progressPorts.delete(port); port.close(); }
   })());
 });
@@ -97,7 +97,14 @@ self.addEventListener('fetch', event => {
   // A navigation may retain #page in Request.url; it is not a cache resource key.
   url.hash = '';
   if (request.method !== 'GET' || url.origin !== scope.origin || !url.pathname.startsWith(scope.pathname)) return;
-  if (request.mode === 'navigate' && [scope.pathname, `${scope.pathname}index.html`].includes(url.pathname)) {
+  if (request.mode === 'navigate' && url.pathname === `${scope.pathname}open.html`) {
+    // Entry must discover newer releases, even when this book was saved offline.
+    // Whitelisted install/page state is parsed by open.js, never used as a cache key.
+    event.respondWith((async () => {
+      try { const response = await fetch(new Request(request, {cache:'no-store'})); if (response.ok) return response; } catch {}
+      return (await (await caches.open(cacheName)).match(new URL('open.html',scope).href)) || Response.error();
+    })());
+  } else if (request.mode === 'navigate' && [scope.pathname, `${scope.pathname}index.html`].includes(url.pathname)) {
     event.respondWith((async () => {
       // Keep HTML and its versioned assets together. Worker updates install the new shell.
       return (await (await caches.open(cacheName)).match(indexUrl)) || fetch(request);

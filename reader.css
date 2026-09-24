@@ -119,3 +119,19 @@ input{caret-color:var(--purple)}
 @media(prefers-reduced-motion:reduce){.loading-line::after{animation:none;transform:none;width:100%}*{scroll-behavior:auto!important}}
 
 .book-title h1,.sidebar h2,.error-panel h2{font-family:"Roboto Mono",monospace}
+
+/* Reading controls share the top row; the book owns the space below it. */
+.toolbar{flex-wrap:wrap;gap:6px 18px;padding-block:6px}
+.page-form{position:relative;flex:none;gap:0}
+.page-form>div{gap:3px;font-size:.8125rem}
+.page-form input{width:calc(2ch + 14px);min-width:36px;height:44px;font-size:1rem}
+.page-go{display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:5;min-width:96px;min-height:44px;padding:8px 12px;border:1px solid var(--purple);border-radius:3px;background:var(--paper);color:var(--purple);font-size:.875rem;box-shadow:0 4px 12px #35264f22}
+.page-form:focus-within .page-go{display:block}
+.book-mat{padding-bottom:max(24px,env(safe-area-inset-bottom))}
+.masthead{height:auto;min-height:var(--header);padding-block:12px}
+.book-title h1{font-size:1.1875rem;overflow-wrap:anywhere}
+.book-title p{font-size:.75rem}
+@media(max-width:899px){.toolbar{gap:4px 12px}.book-title h1{font-size:1rem}.book-title p{font-size:.6875rem}}
+@media(max-width:599px){.toolbar{padding-inline:12px;gap:4px 6px}.text-button{font-size:.75rem;gap:5px}.view-controls{gap:0}.zoom-reset{min-width:38px;font-size:.6875rem}.icon-button{width:34px}.book-title h1{font-size:.875rem}.book-title p{font-size:.625rem}}
+@media(max-width:419px){.fullscreen-toggle{display:none}}
+@media(max-width:359px){.toolbar{padding-inline:10px}.book-title h1{font-size:.8125rem}}
