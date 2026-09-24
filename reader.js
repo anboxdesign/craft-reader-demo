@@ -1,3 +1,4 @@
+import {updateJourney, openSampleEnd} from './journey.js?v=9';
 const $ = (id) => document.getElementById(id);
 const els = Object.fromEntries(['book','stage','reader-layout','sidebar','drawer-backdrop','masthead','reading-area','contents-toggle','close-contents','view-toggle','zoom-out','zoom-in','zoom-reset','fullscreen-toggle','previous','next','page-form','page-number','spread-end','page-progress','current-section','reading-hint','loading-note','error-panel','error-description','retry','announcer'].map(id => [id,$(id)]));
 const TOTAL = 10;
@@ -30,9 +31,9 @@ function updateControls({preservePageInput = false} = {}) {
   els['page-progress'].value = first;
   els['page-progress'].setAttribute('aria-valuetext', `Страница ${first} из ${TOTAL}`);
   els['previous'].disabled = !bookReady || first <= 1;
-  els['next'].disabled = !bookReady || last >= TOTAL;
+  els['next'].disabled = !bookReady;
   els['previous'].setAttribute('aria-label', isSpread() ? 'Предыдущий разворот' : 'Предыдущая страница');
-  els['next'].setAttribute('aria-label', isSpread() ? 'Следующий разворот' : 'Следующая страница');
+  els['next'].setAttribute('aria-label', last === TOTAL ? 'Завершить фрагмент' : isSpread() ? 'Следующий разворот' : 'Следующая страница');
   els['zoom-out'].disabled = !bookReady || zoom <= .75;
   els['zoom-in'].disabled = !bookReady || zoom >= 3;
   els['zoom-reset'].disabled = !bookReady;
@@ -51,6 +52,7 @@ function updateControls({preservePageInput = false} = {}) {
   const title = 'Как придумать живой бренд';
   els['current-section'].textContent = title;
   els['reading-hint'].textContent = last === TOTAL ? 'Конец фрагмента. Спасибо за чтение.' : desktop.matches ? 'Листайте стрелками на клавиатуре' : zoom > 1 ? 'Двигайте страницу, чтобы рассмотреть детали' : 'Листайте свайпом или стрелками';
+  updateJourney({page, atEnd:last === TOTAL && bookReady});
   document.title = `${first}${last !== first ? `–${last}` : ''} / ${TOTAL} — Фиолетовый CRAFT`;
 }
 
@@ -113,10 +115,10 @@ async function render({resetScroll = false,motion = false} = {}) {
   const pages = visiblePages();
   try {
     const mat = getComputedStyle(document.querySelector('.book-mat'));
-    const width = Math.max(100,els.stage.clientWidth-parseFloat(mat.paddingLeft)-parseFloat(mat.paddingRight));
-    const height = Math.max(100,els.stage.clientHeight-parseFloat(mat.paddingTop)-parseFloat(mat.paddingBottom));
+    const width = Math.max(1,els.stage.clientWidth-parseFloat(mat.paddingLeft)-parseFloat(mat.paddingRight));
+    const height = Math.max(1,els.stage.clientHeight-parseFloat(mat.paddingTop)-parseFloat(mat.paddingBottom));
     const widthFit = width/(PAGE_WIDTH*pages.length);
-    const fit = desktop.matches ? Math.min(widthFit,height/PAGE_HEIGHT) : widthFit;
+    const fit = Math.min(widthFit,height/PAGE_HEIGHT);
     const scale = fit*zoom;
     const key = pages.join(',') + ':' + scale.toFixed(6);
     if (key !== lastRenderKey || !els.book.children.length) {
@@ -163,6 +165,7 @@ function navigate(value,{history = true} = {}) {
 function turn(direction) {
   const pages = visiblePages();
   const target = direction > 0 ? pages.at(-1)+1 : pages[0]-(isSpread() ? 2 : 1);
+  if (direction > 0 && target > TOTAL) {openSampleEnd();return;}
   if (target >= 1 && target <= TOTAL) navigate(target);
 }
 function setZoom(value) {

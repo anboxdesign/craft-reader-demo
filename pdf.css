@@ -1,0 +1,15 @@
+html:has(.pdf-preview){height:auto;overflow:auto;scroll-padding-top:var(--pdf-header-height,100px)}
+body.pdf-preview{height:auto;min-height:100dvh;overflow:visible;display:block;background:var(--desk)}
+.pdf-header{position:sticky;top:0;z-index:3;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 24px;padding:12px clamp(16px,4vw,60px);border-bottom:1px solid var(--line);background:var(--paper)}
+.pdf-header a{display:flex;align-items:center;gap:10px;min-height:44px;color:var(--purple);font-size:.875rem;text-decoration:none}
+.pdf-header a:hover{text-decoration:underline}
+.pdf-header small{color:var(--secondary)}
+.pdf-document{width:min(1400px,100%);margin:auto;padding:28px clamp(12px,3vw,40px) 48px}
+.pdf-document h1{font:500 clamp(1.25rem,3vw,2rem)/1.25 "Roboto Mono",monospace;margin:0 0 8px;color:var(--purple)}
+.pdf-intro{margin:0 0 28px;color:var(--secondary);font-size:.875rem}
+.pdf-document figure{margin:0 0 32px;scroll-margin-top:24px}
+.pdf-spread{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));background:var(--paper);box-shadow:0 8px 28px #2a1e461c}
+.pdf-spread img{display:block;width:100%;height:auto;aspect-ratio:1866/2953}
+.pdf-document figcaption{margin:12px 0 0;font-size:.75rem;color:var(--secondary)}
+#preview-error{padding:18px;border:1px solid var(--purple);line-height:1.5}
+@media(max-width:450px){.pdf-header{gap:4px 12px;padding-block:8px}.pdf-header a{font-size:.8125rem}.pdf-header small{display:none}}

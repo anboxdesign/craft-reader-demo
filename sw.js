@@ -1,4 +1,4 @@
-/* Regenerate offline-files.js with scripts/build-craft-reader-pwa-v8.cjs after edits. */
+/* Regenerate offline-files.js with scripts/build-craft-reader-pwa-v9.cjs after edits. */
 importScripts('./offline-files.js');
 const {version, files, migrations} = self.CRAFT_OFFLINE;
 const scope = new URL('./', self.location.href);
@@ -87,6 +87,8 @@ self.addEventListener('message', event => {
 self.addEventListener('fetch', event => {
   const request = event.request;
   const url = new URL(request.url);
+  // A navigation may retain #page in Request.url; it is not a cache resource key.
+  url.hash = '';
   if (request.method !== 'GET' || url.origin !== scope.origin || !url.pathname.startsWith(scope.pathname)) return;
   if (request.mode === 'navigate' && [scope.pathname, `${scope.pathname}index.html`].includes(url.pathname)) {
     event.respondWith((async () => {
