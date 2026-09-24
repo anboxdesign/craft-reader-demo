@@ -1,4 +1,4 @@
-/* Regenerate offline-files.js with scripts/build-craft-reader-pwa-v9.cjs after edits. */
+/* Regenerate offline-files.js with scripts/build-craft-reader-pwa-v10.cjs after edits. */
 importScripts('./offline-files.js');
 const {version, files, migrations} = self.CRAFT_OFFLINE;
 const scope = new URL('./', self.location.href);
@@ -71,6 +71,13 @@ async function saveAll() {
 
 self.addEventListener('message', event => {
   const port = event.ports[0];
+  if (event.data?.type === 'GET_RELEASE' && port) {port.postMessage({release:10,version});port.close();return;}
+  if (event.data?.type === 'ACTIVATE_UPDATE') {
+    // Only the explicit entry/update page can activate a waiting release.
+    const source = event.source?.url ? new URL(event.source.url) : null;
+    if (source?.origin === scope.origin && source.pathname === scope.pathname + 'open.html') event.waitUntil(self.skipWaiting());
+    return;
+  }
   if (!port || !['OFFLINE_STATUS', 'SAVE_OFFLINE'].includes(event.data?.type)) return;
   event.waitUntil((async () => {
     try {

@@ -75,3 +75,6 @@
 
 .app-dialog :is(h2,h3,h4){font-family:"Roboto Mono",monospace}
 @media(max-width:359px){.app-dialog-heading{gap:8px}}
+
+.android-steps{margin:16px 0 20px;padding-left:24px;font-size:1rem;line-height:1.55}.android-steps li+li{margin-top:12px}#android-instructions .primary-button{text-decoration:none}#phone-android-link{display:flex;align-items:center;min-height:44px}#app-dialog:has(#android-instructions:not([hidden])) .app-dialog-heading{position:static;box-shadow:none}
+.platform-guides{display:flex;flex-wrap:wrap;gap:8px 20px}.platform-guides .guide-text-button{min-height:44px;margin:0}

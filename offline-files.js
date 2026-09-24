@@ -1,6 +1,6 @@
 self.CRAFT_OFFLINE = {
-  "version": "v9-82f1cbc5023b",
-  "bytes": 31488729,
+  "version": "v10-94598a78cc05",
+  "bytes": 31501678,
   "files": [
     "assets/CRAFT-demo-2026-09.pdf",
     "assets/fonts/craft-onest-variable-r1.woff2",
@@ -33,18 +33,47 @@ self.CRAFT_OFFLINE = {
     "icons/icon-192.png",
     "icons/icon-512.png",
     "index.html",
-    "journey.css?v=9",
-    "journey.js?v=9",
+    "journey.css?v=10",
+    "journey.js?v=10",
     "manifest.webmanifest",
-    "pdf.css?v=9",
+    "open.css?v=10",
+    "open.html",
+    "open.js?v=10",
+    "pdf.css?v=10",
     "pdf.html",
-    "pdf.js?v=9",
-    "pwa.css?v=9",
-    "pwa.js?v=9",
-    "reader.css?v=9",
-    "reader.js?v=9"
+    "pdf.js?v=10",
+    "pwa.css?v=10",
+    "pwa.js?v=10",
+    "reader.css?v=10",
+    "reader.js?v=10"
   ],
   "migrations": [
+    {
+      "fromVersion": "v9-82f1cbc5023b",
+      "files": [
+        "assets/CRAFT-demo-2026-09.pdf",
+        "assets/fonts/craft-onest-variable-r1.woff2",
+        "assets/fonts/craft-roboto-mono-variable-r1.woff2",
+        "assets/fonts/onest-OFL.txt",
+        "assets/fonts/robotomono-OFL.txt",
+        "assets/ikra-logo.png",
+        "assets/install-characters-v1.png",
+        "assets/pages/2676a3c9c706/page-1.webp",
+        "assets/pages/2676a3c9c706/page-10.webp",
+        "assets/pages/2676a3c9c706/page-2.webp",
+        "assets/pages/2676a3c9c706/page-3.webp",
+        "assets/pages/2676a3c9c706/page-4.webp",
+        "assets/pages/2676a3c9c706/page-5.webp",
+        "assets/pages/2676a3c9c706/page-6.webp",
+        "assets/pages/2676a3c9c706/page-7.webp",
+        "assets/pages/2676a3c9c706/page-8.webp",
+        "assets/pages/2676a3c9c706/page-9.webp",
+        "icons/apple-touch-icon.png",
+        "icons/icon-192.png",
+        "icons/icon-512.png",
+        "manifest.webmanifest"
+      ]
+    },
     {
       "fromVersion": "v8-b6a336f426b3",
       "files": [

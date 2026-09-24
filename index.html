@@ -11,9 +11,9 @@
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="CRAFT">
-  <link rel="stylesheet" href="reader.css?v=9">
-  <link rel="stylesheet" href="pwa.css?v=9">
-  <link rel="stylesheet" href="journey.css?v=9">
+  <link rel="stylesheet" href="reader.css?v=10">
+  <link rel="stylesheet" href="pwa.css?v=10">
+  <link rel="stylesheet" href="journey.css?v=10">
 
 </head>
 <body>
@@ -90,7 +90,7 @@
       <div class="stage" id="stage" aria-busy="true" tabindex="0" aria-label="Страницы книги. Для листания используйте стрелки влево и вправо.">
         <div class="book-mat"><div class="book" id="book"></div></div>
         <div class="loading-note" id="loading-note" role="status"><span class="loading-line" aria-hidden="true"></span><p>Открываем книгу…</p></div>
-        <section class="error-panel" id="error-panel" hidden aria-labelledby="error-title"><h2 id="error-title">Книга не загрузилась</h2><p id="error-description">Проверьте соединение и попробуйте ещё раз.</p><div><button class="primary-button" id="retry"><svg class="icon"><use href="#i-reset"/></svg>Попробовать ещё раз</button><a href="pdf.html#page=1" data-pdf-preview>Открыть PDF</a></div></section>
+        <section class="error-panel" id="error-panel" hidden aria-labelledby="error-title"><h2 id="error-title">Книга не загрузилась</h2><p id="error-description">Проверьте соединение и попробуйте ещё раз.</p><div><button class="primary-button" id="retry"><svg class="icon"><use href="#i-reset"/></svg>Попробовать ещё раз</button><a href="open.html" id="recover-reader">Обновить читалку</a><a href="pdf.html#page=1" data-pdf-preview>Открыть PDF</a></div></section>
       </div>
 
       <footer class="reader-footer">
@@ -109,11 +109,17 @@
   <dialog class="app-dialog" id="app-dialog" aria-labelledby="app-title">
     <div class="app-dialog-heading"><h2 id="app-title">CRAFT с собой</h2><button class="icon-button" id="close-app" aria-label="Закрыть окно приложения"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
     <p class="app-intro">Читайте фрагмент книги с главного экрана — в том числе без интернета.</p>
+    <div class="platform-guides" role="group" aria-label="Инструкции установки на телефон"><button class="guide-text-button" id="show-android-guide">Установка на Android</button><button class="guide-text-button" id="replay-install-guide">Установка на iPhone</button></div>
     <section class="app-section" id="generic-install" aria-labelledby="install-title">
       <h3 id="install-title">На главном экране</h3>
       <p id="install-help">Откройте меню браузера и выберите «Установить приложение» или «Добавить на главный экран».</p>
       <button class="primary-button" id="install-app" hidden>Установить приложение</button>
       <a class="primary-button direct-app-link" id="direct-app" href="./" target="_blank" rel="noopener" hidden>Открыть читалку отдельно</a>
+      <div id="android-instructions" hidden>
+        <a class="primary-button secondary-button direct-app-link" id="android-link" href="open.html?install=android" target="_blank" rel="noopener">Прямая ссылка для Android</a>
+        <ol class="android-steps"><li>Откройте читалку в Chrome на телефоне.</li><li>Нажмите «Установить на Android», если кнопка доступна. Или откройте меню ⋮ → «Добавить на главный экран» → «Установить».</li><li>Откройте значок CRAFT. В разделе «Приложение» сохраните фрагмент для чтения без интернета.</li></ol>
+        <p class="app-note">Если ссылка открылась внутри Telegram, в его меню выберите открытие в браузере и перейдите в Chrome. Названия пунктов зависят от версии браузера.</p>
+      </div>
     </section>
     <section class="safari-guide" id="safari-guide" aria-label="Как установить на iPhone" hidden>
       <nav class="guide-progress" aria-label="Шаги установки">
@@ -174,7 +180,7 @@
       <button class="primary-button" id="save-offline" disabled>Сохранить для офлайн-чтения</button>
       <p class="app-note" id="offline-note">После установки откройте приложение и сохраните фрагмент в нём. Если очистить данные браузера, потребуется сохранить его снова.</p>
     </section>
-    <button class="guide-text-button" id="replay-install-guide">Как установить на iPhone</button>
+    <p class="app-note" id="update-note" hidden>Доступна новая версия. <a id="update-reader" href="open.html">Обновить читалку</a></p>
     <p class="app-demo-note">Демо · фрагмент в свободном доступе. Оплата и вход не требуются.</p>
   </dialog>
   <dialog class="app-dialog" id="sample-dialog" aria-labelledby="sample-title">
@@ -193,9 +199,10 @@
     <textarea id="phone-link" rows="3" readonly spellcheck="false" autocapitalize="off"></textarea>
     <button class="primary-button" id="copy-phone-link">Скопировать ссылку</button>
     <p class="app-note" id="phone-copy-status" role="status"></p>
-    <p class="app-note">На телефоне нажмите «Приложение», чтобы добавить книгу на главный экран.</p>
+    <p class="app-note">Эта ссылка работает на Android и iPhone. На телефоне нажмите «Приложение», чтобы добавить книгу на главный экран.</p>
+    <a class="guide-text-button" id="phone-android-link" href="open.html?install=android" target="_blank" rel="noopener">Открыть установку для Android</a>
   </dialog>
-  <script src="reader.js?v=9" type="module"></script>
-  <script src="pwa.js?v=9" type="module"></script>
+  <script src="reader.js?v=10" type="module"></script>
+  <script src="pwa.js?v=10" type="module"></script>
 </body>
 </html>

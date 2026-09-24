@@ -1,5 +1,5 @@
 const $ = id => document.getElementById(id);
-const publicReader = 'https://anboxdesign.github.io/craft-reader-demo/';
+const publicReader = 'https://anboxdesign.github.io/craft-reader-demo/open.html';
 const siteMobile = matchMedia('(max-width:639px)');
 let currentPage = 1;
 const openers = new WeakMap();
@@ -18,6 +18,7 @@ function updatePurchase() {
 }
 export function updateJourney({page,atEnd}) {
   currentPage = page;
+  $('recover-reader').href = `open.html#page=${page}`;
   document.querySelectorAll('[data-pdf-preview]').forEach(link=>link.href=`pdf.html#page=${page}`);
   $('sample-end').hidden = !atEnd;
   $('reading-hint').hidden = atEnd;
@@ -29,6 +30,7 @@ $('open-phone').addEventListener('click',()=>{
   $('reader-qr').hidden = false;
   $('qr-error').hidden = true;
   $('reader-qr').src = `assets/qr/page-${currentPage}.png`;
+  $('phone-android-link').href = `${publicReader}?install=android#page=${currentPage}`;
   $('phone-copy-status').textContent = '';
   open($('phone-dialog'),$('open-phone'));
 });

@@ -1,4 +1,4 @@
-import {updateJourney, openSampleEnd} from './journey.js?v=9';
+import {updateJourney, openSampleEnd} from './journey.js?v=10';
 const $ = (id) => document.getElementById(id);
 const els = Object.fromEntries(['book','stage','reader-layout','sidebar','drawer-backdrop','masthead','reading-area','contents-toggle','close-contents','view-toggle','zoom-out','zoom-in','zoom-reset','fullscreen-toggle','previous','next','page-form','page-number','spread-end','page-progress','current-section','reading-hint','loading-note','error-panel','error-description','retry','announcer'].map(id => [id,$(id)]));
 const TOTAL = 10;

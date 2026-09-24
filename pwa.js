@@ -5,9 +5,31 @@ const status = $('offline-status');
 const progress = $('offline-progress');
 const embedded = window.top !== window.self;
 const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const android = /Android/i.test(navigator.userAgent);
+let androidMode = android || new URLSearchParams(location.search).get('install') === 'android';
 const standalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
-// Use the reader's own address, including inside Tilda; omit page state and query parameters.
-const directUrl = new URL('./', import.meta.url).href;
+// Enter through the update page, including from Tilda; forward only the book page and chosen guide.
+const directUrl = new URL('./open.html', import.meta.url).href;
+function currentPage() {
+  const hash = new URLSearchParams(location.hash.slice(1)).get('page');
+  let value = hash;
+  try {if (!hash) value = JSON.parse(localStorage.getItem('craft-demo-reader-2676a3c9c706') || '{}').page;} catch {}
+  return Number.isInteger(Number(value)) && Number(value) >= 1 && Number(value) <= 10 ? Number(value) : 1;
+}
+function pageUrl(install) {
+  const url = new URL(directUrl);
+  if (install) url.searchParams.set('install',install);
+  url.hash = `page=${currentPage()}`;
+  return url.href;
+}
+function syncLinks() {
+  $('direct-app').href = pageUrl(android || androidMode ? 'android' : '');
+  $('android-link').href = pageUrl('android');
+  $('update-reader').href = pageUrl('');
+  guideUrl.hash = `page=${currentPage()}`;
+  $('reader-url').value = guideUrl.href;
+  if (safariUrl) $('open-safari').href = guideUrl.href.replace(/^https:/,'x-safari-https:');
+}
 const guideUrl = new URL(directUrl);
 guideUrl.searchParams.set('install', '2');
 // Explicit user-activated handoff; Telegram itself uses this scheme for Safari.
@@ -54,13 +76,20 @@ function dismissHint() {
 }
 
 function renderInstall() {
+  syncLinks();
+  $('android-instructions').hidden = !androidMode || ios || standalone();
+  $('show-android-guide').hidden = androidMode || ios || standalone();
+  $('android-link').hidden = embedded;
+  $('install-title').textContent = androidMode && !ios ? 'Установить на Android' : 'На главном экране';
+  $('install-app').textContent = android ? 'Установить на Android' : 'Установить приложение';
+  $('direct-app').textContent = android ? 'Открыть для Android' : 'Открыть читалку отдельно';
   $('install-app').hidden = !installPrompt || standalone() || embedded;
   $('direct-app').hidden = !embedded || ios;
   if (standalone()) guideMode = false;
   $('safari-guide').hidden = !guideMode;
   $('generic-install').hidden = guideMode || standalone();
   $('offline-section').hidden = guideMode;
-  $('replay-install-guide').hidden = guideMode || standalone();
+  $('replay-install-guide').hidden = guideMode || android || standalone();
   $('install-nudge').hidden = !ios || standalone() || hintDismissed;
   document.querySelector('.app-intro').textContent = guideMode
     ? 'Три шага — и CRAFT на главном экране.'
@@ -79,10 +108,12 @@ function renderInstall() {
       ? 'Установите CRAFT, чтобы открывать книгу с главного экрана.'
       : 'В Chrome или Edge откройте меню браузера и выберите «Установить приложение» или «Добавить на главный экран». Название пункта зависит от браузера.';
   }
+  if (androidMode && !ios && !standalone()) $('install-help').textContent = embedded ? 'Откройте ссылку ниже в Chrome на телефоне, чтобы установить читалку.' : 'Читалка устанавливается на главный экран через Chrome.';
   renderGuide();
 }
 
 $('copy-reader-url').addEventListener('click', async () => {
+  syncLinks();
   const button = $('copy-reader-url');
   button.disabled = true;
   try {
@@ -126,6 +157,9 @@ async function prepareWorker() {
   if (registering) return registering;
   registering = (async () => {
     const candidate = await navigator.serviceWorker.register('./sw.js', {scope: './', updateViaCache: 'none'});
+    const showUpdate = () => {$('update-note').hidden = !candidate.waiting || !navigator.serviceWorker.controller;};
+    showUpdate();
+    candidate.addEventListener('updatefound',()=>candidate.installing?.addEventListener('statechange',showUpdate));
     if (!candidate.active) {
       await new Promise((resolve, reject) => {
         const worker = candidate.installing || candidate.waiting;
@@ -192,7 +226,8 @@ $('guide-next').addEventListener('click', () => {
   else { guideStep++; renderGuide({focus:true}); }
 });
 $('show-offline-settings').addEventListener('click', () => { guideMode = false; renderInstall(); dialog.scrollTop = 0; $('offline-title').focus(); });
-$('replay-install-guide').addEventListener('click', () => { guideMode = true; guideStep = 0; renderInstall(); renderGuide({focus:true}); });
+$('show-android-guide').addEventListener('click',()=>{androidMode=true;guideMode=false;renderInstall();dialog.scrollTop=0;});
+$('replay-install-guide').addEventListener('click', () => { androidMode = false; guideMode = true; guideStep = 0; renderInstall(); renderGuide({focus:true}); });
 $('close-app').addEventListener('click', () => dialog.close());
 dialog.addEventListener('close', () => (appOpener.getClientRects().length ? appOpener : $('open-app')).focus());
 $('install-app').addEventListener('click', async () => {
@@ -238,3 +273,4 @@ renderInstall();
 updateStatus();
 // Only an explicit handoff link opens the guide automatically. Ordinary visits remain readable.
 if (new URLSearchParams(location.search).get('install') === '2' && !standalone()) openApp($('open-app'), 1);
+if (new URLSearchParams(location.search).get('install') === 'android' && !standalone()) {openApp();guideMode=false;renderInstall();}
