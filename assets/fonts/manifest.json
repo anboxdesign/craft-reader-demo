@@ -1,0 +1,34 @@
+[
+  {
+    "family": "Roboto Mono",
+    "file": "craft-roboto-mono-variable-r1.woff2",
+    "source": "output\\font-comparison\\fonts\\RobotoMono[wght].ttf",
+    "bytes": 105292,
+    "sha256": "ebb985ee09bf632ddb75eca94b720022e915bbe7cd2ead4a9645e176b8b0844d",
+    "axes": [
+      {
+        "tag": "wght",
+        "min": 100,
+        "max": 700
+      }
+    ],
+    "license": "robotomono-OFL.txt",
+    "glyphs": 876
+  },
+  {
+    "family": "Onest",
+    "file": "craft-onest-variable-r1.woff2",
+    "source": "output\\font-comparison\\fonts\\Onest[wght].ttf",
+    "bytes": 84020,
+    "sha256": "9dd1880608c3f23de01b139f61d8e6a85bf13482ec67d0a76f0510d19d0e590c",
+    "axes": [
+      {
+        "tag": "wght",
+        "min": 100,
+        "max": 900
+      }
+    ],
+    "license": "onest-OFL.txt",
+    "glyphs": 780
+  }
+]

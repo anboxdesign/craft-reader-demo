@@ -1,6 +1,6 @@
-@font-face{font-family:"TT Fors";src:url("assets/TT-Fors-Trial-Variable.ttf") format("truetype");font-weight:100 900;font-display:swap}
-@font-face{font-family:"Ecomtech Mono";src:url("assets/Ecomtech-Mono.otf") format("opentype");font-weight:400;font-display:swap}
-:root{--purple:#584193;--ink:#35264f;--secondary:#746486;--line:#ddd6e9;--paper:#fff;--desk:#f1eef6;--hover:#ebe5f4;--sidebar:280px;--header:88px;color-scheme:light;font-family:"TT Fors",Arial,sans-serif;color:var(--ink);font-synthesis:none}
+@font-face{font-family:"Onest";src:url("assets/fonts/craft-onest-variable-r1.woff2") format("woff2");font-style:normal;font-weight:100 900;font-display:swap}
+@font-face{font-family:"Roboto Mono";src:url("assets/fonts/craft-roboto-mono-variable-r1.woff2") format("woff2");font-style:normal;font-weight:100 700;font-display:swap}
+:root{--purple:#584193;--ink:#35264f;--secondary:#746486;--line:#ddd6e9;--paper:#fff;--desk:#f1eef6;--hover:#ebe5f4;--sidebar:280px;--header:88px;color-scheme:light;font-family:"Onest",Arial,sans-serif;color:var(--ink);font-synthesis:none}
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;height:100%;overflow:hidden}
 body{height:100dvh;background:var(--paper);display:flex;flex-direction:column}
@@ -44,14 +44,14 @@ input{caret-color:var(--purple)}
 .contents-link:hover{background:#f6f3fa;color:var(--purple)}
 .contents-link.is-current{background:var(--hover);color:var(--purple)}
 .contents-link.is-current>span:first-child{font-weight:610}
-.contents-link .folio{font-family:"Ecomtech Mono",monospace;font-size:13px;line-height:1.1;color:var(--secondary);min-width:17px;text-align:right;margin-left:auto;font-variant-numeric:tabular-nums}
+.contents-link .folio{font-family:"Roboto Mono",monospace;font-size:13px;line-height:1.1;color:var(--secondary);min-width:17px;text-align:right;margin-left:auto;font-variant-numeric:tabular-nums}
 .contents-link.is-current .folio{color:var(--purple)}
 .chapter-group{margin-top:12px;padding-top:13px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:3px}
 .chapter-link{font-size:16px;font-weight:520;line-height:1.3;padding-bottom:13px}
 .chapter-link small{display:block;font-size:12px;font-weight:400;line-height:1.4;margin-top:7px;color:var(--secondary)}
 .sub-link{font-size:13px;padding-top:9px;padding-bottom:9px}
 .step-link{gap:9px;font-size:13px;padding-top:9px;padding-bottom:9px}
-.step{color:var(--secondary);font-family:"Ecomtech Mono",monospace;font-size:12px;width:12px;flex:none}
+.step{color:var(--secondary);font-family:"Roboto Mono",monospace;font-size:12px;width:12px;flex:none}
 
 
 
@@ -117,3 +117,5 @@ input{caret-color:var(--purple)}
 @media(max-width:359px){.book-title h1{font-size:13px}.book-title p{font-size:9px}.masthead{gap:12px;padding-inline:12px}.book-title{padding-left:12px}.brand,.brand-mark{width:56px}.toolbar{padding-inline:10px}.fullscreen-toggle{display:none}.reader-footer{padding-inline:12px}.book-mat{padding-inline:12px}.page-form{gap:6px}}
 @media(max-height:560px) and (min-width:600px){:root{--header:60px}.toolbar{min-height:48px}.reader-footer{padding-top:6px;padding-bottom:2px}.book-mat{padding-block:18px}.sidebar{padding-top:14px}.reading-hint{display:none}.footer-row{grid-template-columns:1fr auto}.page-progress{margin-top:0}}
 @media(prefers-reduced-motion:reduce){.loading-line::after{animation:none;transform:none;width:100%}*{scroll-behavior:auto!important}}
+
+.book-title h1,.sidebar h2,.error-panel h2{font-family:"Roboto Mono",monospace}

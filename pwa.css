@@ -33,7 +33,7 @@
 .install-nudge .icon-button{width:44px}
 .guide-progress{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 22px}
 .guide-progress button{display:flex;align-items:center;justify-content:center;flex:1 0 auto;min-height:48px;gap:6px;padding:6px 2px;border-bottom:2px solid var(--line);font-size:.75rem;color:var(--purple);white-space:nowrap}
-.guide-progress button>span{font-family:"Ecomtech Mono",monospace;font-size:1rem}
+.guide-progress button>span{font-family:"Roboto Mono",monospace;font-size:1rem}
 .guide-progress button[aria-current="step"]{border-color:var(--purple);font-weight:650}
 .app-dialog .guide-step h3{font-size:1.375rem;line-height:1.2;letter-spacing:-.02em}
 .comic-scene{display:grid;grid-template-columns:43% minmax(0,1fr);align-items:center;gap:12px;min-height:180px;margin:10px 0 18px;color:var(--purple)}
@@ -45,7 +45,7 @@
 .comic-phone-title{font-size:14px;font-weight:600}
 .comic-compass{width:64px;height:64px;fill:none;stroke:currentColor;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round}
 .comic-address{padding:8px 4px;background:var(--desk);border-radius:4px;font-size:11px;text-align:center;width:100%}
-.comic-page-title{font-family:"Ecomtech Mono",monospace;font-size:22px;padding:12px 0}
+.comic-page-title{font-family:"Roboto Mono",monospace;font-size:22px;padding:12px 0}
 .comic-toolbar{display:flex;align-items:center;justify-content:space-around;width:100%;gap:6px}
 .comic-toolbar>span{font-size:22px;line-height:1}
 .comic-toolbar .comic-highlight{box-sizing:content-box;width:24px;height:24px;padding:8px;border:1px solid var(--purple);border-radius:8px;background:var(--desk)}
@@ -72,3 +72,6 @@
 @media(max-width:699px){.app-button span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}.masthead-actions{gap:2px}.masthead-actions .download-link{width:44px;min-width:44px;justify-content:center}.masthead-actions .download-link span,.masthead-actions .download-link small{display:none}.masthead{gap:12px}.book-title{padding-left:12px}.app-dialog{padding:20px}.app-dialog h2{font-size:1.5rem}}
 @media(max-width:359px){.masthead{gap:8px}.brand,.brand-mark{width:48px}.book-title{padding-left:8px}}
 @media(min-width:2000px){.app-button{font-size:15px}}
+
+.app-dialog :is(h2,h3,h4){font-family:"Roboto Mono",monospace}
+@media(max-width:359px){.app-dialog-heading{gap:8px}}
