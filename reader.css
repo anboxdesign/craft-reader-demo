@@ -74,7 +74,7 @@ input{caret-color:var(--purple)}
 .book:empty{box-shadow:none;background:none}
 .pdf-page{position:relative;flex:none;background:var(--paper);isolation:isolate;overflow:hidden}
 .pdf-page+.pdf-page{box-shadow:-1px 0 0 #dfd9e7}
-.pdf-page canvas{display:block;width:100%;height:100%}
+.pdf-page canvas,.pdf-page img{display:block;width:100%;height:100%}
 .pdf-page .textLayer{z-index:1}
 .pdf-link{position:absolute;z-index:2;background:transparent}
 .pdf-link:hover{background:rgba(88,65,147,.1);outline:1px solid var(--purple)}

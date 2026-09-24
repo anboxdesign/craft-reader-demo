@@ -1,4 +1,4 @@
-/* Regenerate offline-files.js with scripts/build-craft-reader-pwa-v6.cjs after edits. */
+/* Regenerate offline-files.js with scripts/build-craft-reader-pwa-v7.cjs after edits. */
 importScripts('./offline-files.js');
 const {version, files, migrations} = self.CRAFT_OFFLINE;
 const scope = new URL('./', self.location.href);
@@ -7,7 +7,7 @@ const cacheName = `${prefix}${version}`;
 const urls = files.map(file => new URL(file, scope).href);
 const allowed = new Set(urls);
 const indexUrl = new URL('index.html', scope).href;
-const shell = files.filter(file => !file.startsWith('vendor/') && !file.endsWith('.pdf'));
+const shell = files.filter(file => !file.startsWith('vendor/') && !file.startsWith('assets/pages/') && !file.endsWith('.pdf'));
 let saving;
 const progressPorts = new Set();
 

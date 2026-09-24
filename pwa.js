@@ -108,7 +108,7 @@ function callWorker(type, onProgress) {
     const close = () => { clearTimeout(timer); channel.port1.close(); };
     const resetTimer = () => {
       clearTimeout(timer);
-      timer = setTimeout(() => { close(); reject(new Error('Сохранение прервалось. Проверьте соединение и повторите.')); }, 45000);
+      timer = setTimeout(() => { close(); reject(new Error('Сохранение прервалось. Проверьте соединение и повторите.')); }, 180000);
     };
     channel.port1.onmessage = ({data}) => {
       resetTimer();
@@ -162,7 +162,7 @@ async function updateStatus() {
     const result = await callWorker('OFFLINE_STATUS');
     readyOffline = result.ready;
     status.textContent = readyOffline
-      ? 'Сохранено · все 44 страницы доступны без интернета.'
+      ? 'Сохранено · все 10 страниц доступны без интернета.'
       : navigator.onLine ? 'Фрагмент ещё не сохранён на этом устройстве.' : 'Подключитесь к интернету, чтобы сохранить фрагмент.';
     saveButton.textContent = readyOffline ? 'Фрагмент сохранён' : 'Сохранить для офлайн-чтения';
     saveButton.disabled = readyOffline || !navigator.onLine;

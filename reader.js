@@ -1,12 +1,13 @@
 const $ = (id) => document.getElementById(id);
 const els = Object.fromEntries(['book','stage','reader-layout','sidebar','drawer-backdrop','masthead','reading-area','contents-toggle','close-contents','view-toggle','zoom-out','zoom-in','zoom-reset','fullscreen-toggle','previous','next','page-form','page-number','spread-end','page-progress','current-section','reading-hint','loading-note','error-panel','error-description','retry','announcer'].map(id => [id,$(id)]));
-const TOTAL = 44;
-const PDF_URL = new URL('assets/CRAFT_test_2.pdf', import.meta.url);
-const STORAGE = 'craft-demo-reader-v1';
+const TOTAL = 10;
+const PAGE_WIDTH = 1866, PAGE_HEIGHT = 2953;
+const pendingLoads = new Set();
+const STORAGE = 'craft-demo-reader-2676a3c9c706';
 const desktop = matchMedia('(min-width:900px)');
 const reducedMotion = matchMedia('(prefers-reduced-motion:reduce)');
 const toc = [...document.querySelectorAll('[data-page]')];
-let pdfjs, pdf, loadingTask, renderTasks = [], textLayers = [], revision = 0, resizeTimer, loadRevision = 0;
+let bookReady = false, revision = 0, resizeTimer;
 let saved = {};
 try { saved = JSON.parse(localStorage.getItem(STORAGE) || '{}') || {}; } catch {}
 const validPage = value => Number.isInteger(Number(value)) && Number(value) >= 1 && Number(value) <= TOTAL ? Number(value) : null;
@@ -28,17 +29,17 @@ function updateControls({preservePageInput = false} = {}) {
   els['spread-end'].textContent = last !== first ? `–${last}` : '';
   els['page-progress'].value = first;
   els['page-progress'].setAttribute('aria-valuetext', `Страница ${first} из ${TOTAL}`);
-  els['previous'].disabled = !pdf || first <= 1;
-  els['next'].disabled = !pdf || last >= TOTAL;
+  els['previous'].disabled = !bookReady || first <= 1;
+  els['next'].disabled = !bookReady || last >= TOTAL;
   els['previous'].setAttribute('aria-label', isSpread() ? 'Предыдущий разворот' : 'Предыдущая страница');
   els['next'].setAttribute('aria-label', isSpread() ? 'Следующий разворот' : 'Следующая страница');
-  els['zoom-out'].disabled = !pdf || zoom <= .75;
-  els['zoom-in'].disabled = !pdf || zoom >= 3;
-  els['zoom-reset'].disabled = !pdf;
+  els['zoom-out'].disabled = !bookReady || zoom <= .75;
+  els['zoom-in'].disabled = !bookReady || zoom >= 3;
+  els['zoom-reset'].disabled = !bookReady;
   els['zoom-reset'].textContent = `${Math.round(zoom*100)}%`;
-  els['view-toggle'].disabled = !pdf;
+  els['view-toggle'].disabled = !bookReady;
   els['view-toggle'].setAttribute('aria-pressed', String(isSpread()));
-  els['page-number'].disabled = els['page-progress'].disabled = !pdf;
+  els['page-number'].disabled = els['page-progress'].disabled = !bookReady;
   els.stage.classList.toggle('is-zoomed',zoom > 1);
   let active = null;
   for (const link of toc) if (Number(link.dataset.page) <= page) active = link;
@@ -47,7 +48,7 @@ function updateControls({preservePageInput = false} = {}) {
     link.classList.toggle('is-current', selected);
     if (selected) link.setAttribute('aria-current','location'); else link.removeAttribute('aria-current');
   }
-  const title = page < 3 ? 'Привет, мы — книга' : page < 11 ? 'Введение' : 'Как придумать живой бренд';
+  const title = 'Как придумать живой бренд';
   els['current-section'].textContent = title;
   els['reading-hint'].textContent = last === TOTAL ? 'Конец фрагмента. Спасибо за чтение.' : desktop.matches ? 'Листайте стрелками на клавиатуре' : zoom > 1 ? 'Двигайте страницу, чтобы рассмотреть детали' : 'Листайте свайпом или стрелками';
   document.title = `${first}${last !== first ? `–${last}` : ''} / ${TOTAL} — Фиолетовый CRAFT`;
@@ -69,10 +70,7 @@ function setSidebar(open, focus = false) {
 }
 
 function cancelRender() {
-  renderTasks.forEach(task => task.cancel());
-  textLayers.forEach(layer => layer.cancel());
-  renderTasks = [];
-  textLayers = [];
+  for (const cancel of [...pendingLoads]) cancel();
 }
 
 function showError(error) {
@@ -87,34 +85,25 @@ function showError(error) {
   console.error('CRAFT reader:', error);
 }
 
-async function addLinks(pdfPage, viewport, container) {
-  const annotations = await pdfPage.getAnnotations({intent:'display'});
-  for (const annotation of annotations) {
-    if (annotation.subtype !== 'Link' || !annotation.rect) continue;
-    const link = document.createElement('a');
-    if (annotation.url && /^https?:\/\//i.test(annotation.url)) {
-      link.href = annotation.url;
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
-      link.setAttribute('aria-label', 'Открыть ссылку из книги в новой вкладке');
-    } else if (annotation.dest) {
-      let dest = annotation.dest;
-      if (typeof dest === 'string') dest = await pdf.getDestination(dest);
-      if (!Array.isArray(dest) || !dest[0]) continue;
-      const target = typeof dest[0] === 'number' ? dest[0] + 1 : (await pdf.getPageIndex(dest[0])) + 1;
-      if (!validPage(target)) continue;
-      link.href = `#page=${target}`;
-      link.setAttribute('aria-label', `Перейти на страницу ${target}`);
-    } else continue;
-    const rect = viewport.convertToViewportRectangle(annotation.rect);
-    link.className = 'pdf-link';
-    Object.assign(link.style,{left:`${Math.min(rect[0],rect[2])}px`,top:`${Math.min(rect[1],rect[3])}px`,width:`${Math.abs(rect[2]-rect[0])}px`,height:`${Math.abs(rect[3]-rect[1])}px`});
-    container.append(link);
-  }
+// The source PDF is already raster-only. Lossless, pre-rendered portrait pages
+// avoid decoding its large spreads in PDF.js on the reader's device.
+function loadPage(number) {
+  return new Promise((resolve,reject) => {
+    const img = new Image(PAGE_WIDTH,PAGE_HEIGHT);
+    img.alt = '';
+    img.decoding = 'sync';
+    const finish = () => { clearTimeout(timer); pendingLoads.delete(cancel); img.onload = img.onerror = null; };
+    const cancel = () => { finish(); img.src = ''; reject(new DOMException('Cancelled','AbortError')); };
+    const timer = setTimeout(() => { finish(); img.src = ''; reject(new Error('Page download timeout')); },90000);
+    pendingLoads.add(cancel);
+    img.onload = () => { finish(); resolve(img); };
+    img.onerror = () => { finish(); reject(new Error('Page download failed')); };
+    img.src = new URL('assets/pages/2676a3c9c706/page-' + number + '.webp',import.meta.url).href;
+  });
 }
 
-async function render({resetScroll = false, motion = false} = {}) {
-  if (!pdf) return;
+async function render({resetScroll = false,motion = false} = {}) {
+  if (!bookReady) return;
   const ticket = ++revision;
   cancelRender();
   els.stage.setAttribute('aria-busy','true');
@@ -123,56 +112,30 @@ async function render({resetScroll = false, motion = false} = {}) {
   els['error-panel'].hidden = true;
   const pages = visiblePages();
   try {
-    const sources = await Promise.all(pages.map(number => pdf.getPage(number)));
-    if (ticket !== revision) return;
     const mat = getComputedStyle(document.querySelector('.book-mat'));
-    const horizontal = parseFloat(mat.paddingLeft)+parseFloat(mat.paddingRight);
-    const vertical = parseFloat(mat.paddingTop)+parseFloat(mat.paddingBottom);
-    const availableWidth = Math.max(100,els.stage.clientWidth-horizontal);
-    const availableHeight = Math.max(100,els.stage.clientHeight-vertical);
-    const base = sources[0].getViewport({scale:1});
-    const widthFit = availableWidth/(base.width*pages.length);
-    const fit = desktop.matches ? Math.min(widthFit,availableHeight/base.height) : widthFit;
+    const width = Math.max(100,els.stage.clientWidth-parseFloat(mat.paddingLeft)-parseFloat(mat.paddingRight));
+    const height = Math.max(100,els.stage.clientHeight-parseFloat(mat.paddingTop)-parseFloat(mat.paddingBottom));
+    const widthFit = width/(PAGE_WIDTH*pages.length);
+    const fit = desktop.matches ? Math.min(widthFit,height/PAGE_HEIGHT) : widthFit;
     const scale = fit*zoom;
-    const key = `${pages.join(',')}:${scale.toFixed(4)}:${window.devicePixelRatio}`;
-    if (key === lastRenderKey && els.book.children.length) {
-      els.stage.setAttribute('aria-busy','false');
-      els.stage.classList.remove('is-rendering');
-      return;
-    }
-    const fragment = document.createDocumentFragment();
-    await Promise.all(sources.map(async (source,index) => {
-      const viewport = source.getViewport({scale});
-      const article = document.createElement('article');
-      article.className = 'pdf-page';
-      article.dataset.page = pages[index];
-      article.setAttribute('aria-label',`Страница PDF ${pages[index]} из ${TOTAL}`);
-      article.style.width = `${viewport.width}px`;
-      article.style.height = `${viewport.height}px`;
-      article.style.setProperty('--total-scale-factor',String(scale));
-      const canvas = document.createElement('canvas');
-      canvas.setAttribute('aria-hidden','true');
-      // Bound raster memory on 4K and at maximum zoom; keep the PDF text vector-based.
-      const outputScale = Math.min(window.devicePixelRatio || 1,2.5,Math.sqrt(8_000_000/(viewport.width*viewport.height)));
-      canvas.width = Math.ceil(viewport.width*outputScale);
-      canvas.height = Math.ceil(viewport.height*outputScale);
-      article.append(canvas);
-      fragment.append(article);
-      const task = source.render({canvasContext:canvas.getContext('2d',{alpha:false}),viewport,transform:outputScale === 1 ? null : [outputScale,0,0,outputScale,0,0],background:'#ffffff'});
-      renderTasks.push(task);
-      await task.promise;
+    const key = pages.join(',') + ':' + scale.toFixed(6);
+    if (key !== lastRenderKey || !els.book.children.length) {
+      const images = await Promise.all(pages.map(loadPage));
       if (ticket !== revision) return;
-      const textLayerContainer = document.createElement('div');
-      textLayerContainer.className = 'textLayer';
-      article.append(textLayerContainer);
-      const layer = new pdfjs.TextLayer({textContentSource:source.streamTextContent(),container:textLayerContainer,viewport});
-      textLayers.push(layer);
-      await layer.render();
-      await addLinks(source,viewport,article);
-    }));
-    if (ticket !== revision) return;
-    els.book.replaceChildren(fragment);
-    lastRenderKey = key;
+      const fragment = document.createDocumentFragment();
+      pages.forEach((number,index) => {
+        const article = document.createElement('article');
+        article.className = 'pdf-page';
+        article.dataset.page = number;
+        article.setAttribute('aria-label',`Страница фрагмента ${number} из ${TOTAL}`);
+        article.style.width = PAGE_WIDTH*scale + 'px';
+        article.style.height = PAGE_HEIGHT*scale + 'px';
+        article.append(images[index]);
+        fragment.append(article);
+      });
+      els.book.replaceChildren(fragment);
+      lastRenderKey = key;
+    }
     els['loading-note'].hidden = true;
     els.stage.classList.remove('is-rendering','is-empty');
     els.stage.setAttribute('aria-busy','false');
@@ -180,7 +143,7 @@ async function render({resetScroll = false, motion = false} = {}) {
     if (motion && !reducedMotion.matches) els.book.animate([{clipPath:'inset(0 0 0 3%)'},{clipPath:'inset(0 0 0 0)'}],{duration:180,easing:'cubic-bezier(.16,1,.3,1)'});
     announce(`Страниц${pages.length > 1 ? 'ы' : 'а'} ${pages.join('–')} из ${TOTAL}. ${els['current-section'].textContent}.`);
   } catch(error) {
-    if (ticket !== revision || error.name === 'RenderingCancelledException' || error.name === 'AbortException') return;
+    if (ticket !== revision || error.name === 'AbortError') return;
     cancelRender();
     lastRenderKey = '';
     showError(error);
@@ -189,7 +152,7 @@ async function render({resetScroll = false, motion = false} = {}) {
 
 function navigate(value,{history = true} = {}) {
   const target = validPage(value);
-  if (!target) { els['page-number'].setCustomValidity('Введите номер от 1 до 44'); els['page-number'].reportValidity(); return; }
+  if (!target) { els['page-number'].setCustomValidity(`Введите номер от 1 до ${TOTAL}`); els['page-number'].reportValidity(); return; }
   const changed = target !== page;
   page = target;
   if (history && hashPage() !== page) window.history.pushState({craftReaderPage:page},'',`#page=${page}`);
@@ -208,29 +171,10 @@ function setZoom(value) {
   render({resetScroll:zoom === 1});
 }
 
-async function loadBook() {
-  const loadTicket = ++loadRevision;
-  els['error-panel'].hidden = true;
-  els['loading-note'].hidden = false;
-  els.stage.setAttribute('aria-busy','true');
-  let timer;
-  try {
-    pdfjs ||= await import('./vendor/pdfjs/build/pdf.min.mjs');
-    pdfjs.GlobalWorkerOptions.workerSrc = new URL('./vendor/pdfjs/build/pdf.worker.min.mjs',import.meta.url).href;
-    if (loadingTask) await loadingTask.destroy();
-    loadingTask = pdfjs.getDocument({url:PDF_URL.href,cMapUrl:new URL('vendor/pdfjs/cmaps/',import.meta.url).href,cMapPacked:true,standardFontDataUrl:new URL('vendor/pdfjs/standard_fonts/',import.meta.url).href,wasmUrl:new URL('vendor/pdfjs/wasm/',import.meta.url).href,isEvalSupported:false,enableXfa:false});
-    pdf = await Promise.race([loadingTask.promise,new Promise((_,reject) => {timer = setTimeout(() => reject(new Error('PDF load timeout')),25000);})]);
-    if (loadTicket !== loadRevision) return;
-    if (pdf.numPages !== TOTAL) throw new Error('Unexpected PDF page count');
-    updateControls();
-    await render();
-  } catch(error) {
-    if (loadTicket !== loadRevision) return;
-    pdf = null;
-    if (loadingTask) { loadingTask.destroy().catch(() => {}); loadingTask = null; }
-    updateControls();
-    showError(error);
-  } finally { clearTimeout(timer); }
+function loadBook() {
+  bookReady = true;
+  updateControls();
+  render();
 }
 
 els['contents-toggle'].addEventListener('click',() => setSidebar(!sidebarOpen,true));
@@ -251,8 +195,7 @@ els['page-number'].addEventListener('input',() => els['page-number'].setCustomVa
 els['page-form'].addEventListener('submit',event => {event.preventDefault();navigate(Number(els['page-number'].value));els['page-number'].blur();});
 els['page-progress'].addEventListener('input',() => els['page-progress'].setAttribute('aria-valuetext',`Страница ${els['page-progress'].value} из ${TOTAL}`));
 els['page-progress'].addEventListener('change',() => navigate(Number(els['page-progress'].value)));
-// A failed worker import is cached by the browser. Reload gives recovery a fresh module graph.
-els.retry.addEventListener('click',() => {if (pdf) render();else location.reload();});
+els.retry.addEventListener('click',() => render());
 window.addEventListener('hashchange',() => {const target = hashPage();if (target && target !== page) navigate(target,{history:false});});
 window.addEventListener('popstate',event => {
   const target = hashPage() || validPage(event.state?.craftReaderPage);

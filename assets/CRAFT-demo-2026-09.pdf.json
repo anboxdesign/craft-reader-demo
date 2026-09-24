@@ -1,0 +1,17 @@
+{
+  "source": "User-supplied CRAFT .pdf, 2026-09-24",
+  "sha256": "2676a3c9c706c4705169057bdadd4470508bde792b5c1838b6ea27a9b9e3d6fd",
+  "bytes": 18487898,
+  "pdfPages": 5,
+  "readerPages": 10,
+  "transformation": "Original PDF bytes unchanged. Display assets are lossless WebP images from 3732 x 2953 Poppler spread renders, split into ten 1866 x 2953 portrait pages.",
+  "sourcePagePoints": [
+    1888,
+    1494
+  ],
+  "embeddedImagePixels": [
+    3732,
+    2953
+  ],
+  "textLayer": false
+}
