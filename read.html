@@ -2,29 +2,37 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#584193">
-  <meta name="description" content="Приложение CRAFT. Демоверсия книги «Фиолетовый CRAFT».">
-  <title>Читать книгу — Фиолетовый CRAFT</title>
-  <link rel="icon" href="assets/ikra-logo.png">
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="CRAFT">
-  <link rel="stylesheet" href="reader.css?v=12">
-  <link rel="stylesheet" href="pwa.css?v=12">
-  <link rel="stylesheet" href="journey.css?v=12">
-
-</head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f5f3ef">
+  <link rel="icon" href="./favicon.ico?v=13" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png?v=13">
+  <title>Фиолетовый CRAFT — демоверсия</title>
+  <link rel="stylesheet" href="./demo-reader-v13.css">
+  <script type="module" src="./demo-boot-v13.mjs"></script>
+<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><link rel="stylesheet" href="pwa.css?v=13"><link rel="stylesheet" href="journey.css?v=13"><link rel="stylesheet" href="demo-ui-v13.css"></head>
 <body>
-  <!-- THESIS: The original book is the reading surface. Its pages lead immediately.
-  OWN-WORLD: CRAFT purple, white paper, Onest, Roboto Mono, the supplied IKRA logo.
-  STORY: Open the real sample, read sequentially or jump to a step, enlarge and return.
-  FIRST VIEWPORT: Quiet masthead, contents at left, original two-page spread in the remaining field, controls above. Mobile shows one page with collapsible contents.
-  FORM: User-confirmed original PDF pages, code-led extension of the established CRAFT world; no concept seed required for this specified reader.
-  FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance -->
-  <a class="skip-link" href="#reading-area">К чтению</a>
-  <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <main id="reader" aria-label="Читалка CRAFT">
+    <header class="reading-header"><a class="demo-brand" href="https://ikraikra.ru/craft" target="_blank" rel="noopener" aria-label="ИКРА — о книге"><img src="assets/ikra-logo.png" alt="ИКРА" width="56" height="24"></a><span id="running-header">Фиолетовый CRAFT</span><button id="menu-open" aria-label="Открыть меню чтения" aria-haspopup="dialog">☰</button></header>
+    <section id="viewport" aria-label="Текущая страница" tabindex="0"><div class="status" role="status">Открываем книгу…</div></section>
+    <footer class="reading-footer"><button id="previous" aria-label="Предыдущая страница">←</button><div><span id="progress" aria-live="polite" aria-atomic="true">—</span></div><button id="next" aria-label="Следующая страница">→</button></footer>
+    <p id="notice" role="status" hidden></p>
+  </main>
+  <div id="measure" class="page text-page" aria-hidden="true" inert></div>
+  <dialog id="menu" aria-labelledby="menu-title">
+    <div class="dialog-header"><h2 id="menu-title">Чтение</h2><button class="close" data-close aria-label="Закрыть меню">×</button></div>
+    <button type="button" id="mobile-install" class="install-primary"><span>Установить приложение</span></button>
+    <p class="book-name">Фиолетовый CRAFT</p><p class="book-meta">Страницы 1–15, с обложки</p>
+    <section class="settings" aria-labelledby="size-title"><h3 id="size-title">Aa · Размер текста</h3><div class="size-controls"><button id="font-less" aria-label="Уменьшить текст">A−</button><output id="font-value">14 px</output><button id="font-more" aria-label="Увеличить текст">A+</button></div><div class="reading-presets" role="group" aria-label="Размер для чтения"><button type="button" data-reading-size="12" aria-pressed="false">Компактный<small>12 px</small></button><button type="button" data-reading-size="14" aria-pressed="true">Обычный<small>14 px</small></button><button type="button" data-reading-size="16" aria-pressed="false">Крупнее<small>16 px</small></button></div><p class="font-preview" aria-hidden="true">Так будет выглядеть текст книги.</p><p id="font-status" class="reading-size-hint" role="status">Размер сохраняется автоматически. Место чтения не потеряется.</p><button id="font-reset" class="text-button">Вернуть 14 px</button></section>
+    <nav class="menu-actions" aria-label="Навигация по книге"><button id="contents-open">Содержание</button><button id="notes-open">Заметки <span id="notes-count"></span></button><button id="note-current">Добавить заметку</button><button type="button" id="mobile-account">Купить полную версию</button></nav>
+    <p class="pilot-note">Фрагмент: страницы 1–15.<br>Число экранных страниц зависит от настроек.</p>
+  </dialog>
+  
+  <dialog id="viewer" class="viewer" aria-labelledby="viewer-title"><div class="dialog-header"><h2 id="viewer-title">Схема</h2><button class="close" data-close aria-label="Вернуться к чтению">×</button></div><div id="zoom-controls"><button id="zoom-out" aria-label="Уменьшить схему">−</button><output id="zoom-value">100%</output><button id="zoom-in" aria-label="Увеличить схему">+</button><button id="zoom-fit">Вписать</button></div><div id="diagram-navigation" hidden><label for="region-select" class="sr-only">Перейти к роли</label><select id="region-select"></select><button id="map-toggle" aria-pressed="true">Карта</button></div><div class="viewer-stage"><div id="viewer-content" tabindex="0" aria-label="Область просмотра. Для перемещения используйте стрелки."></div><button id="mini-map" hidden aria-label="Мини-карта. Нажмите в нужном месте для перехода; Enter возвращает в центр схемы."><img id="mini-map-img" alt=""><span id="map-window"></span></button></div><p id="viewer-hint">Масштаб: кнопками или двумя пальцами. Перемещение: перетаскиванием или стрелками.</p></dialog>
+  <button id="selection-note" hidden>＋ Заметка</button>
+  <dialog id="notes" aria-labelledby="notes-title"><div class="dialog-header"><h2 id="notes-title">Заметки</h2><button class="close" data-close aria-label="Закрыть заметки">×</button></div><p class="notes-hint">Сохраняются в этом браузере. На других устройствах не появятся.</p><div id="notes-list"></div><button id="notes-export" class="text-button">Скачать заметки</button></dialog>
+  <dialog id="note-editor" aria-labelledby="note-editor-title"><div class="dialog-header"><h2 id="note-editor-title">Заметка</h2><button class="close" data-close aria-label="Закрыть редактор заметки">×</button></div><p id="note-location"></p><blockquote id="note-quote" hidden></blockquote><form id="note-form"><label for="note-text">Ваш текст</label><textarea id="note-text" rows="5" maxlength="10000" required></textarea><p id="note-error" role="status"></p><div class="note-actions"><button type="submit" id="note-save">Сохранить</button><button type="button" id="note-cancel">Отмена</button></div></form></dialog>
+  <dialog id="note" aria-labelledby="note-title"><div class="dialog-header"><h2 id="note-title">Сноска 2</h2><button class="close" data-close aria-label="Закрыть сноску">×</button></div><div id="note-content"></div></dialog>
+<svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h15m-6-6 6 6-6 6"/></symbol>
     <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M3 6h.1M3 12h.1M3 18h.1"/></symbol>
     <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/></symbol>
@@ -38,65 +46,10 @@
     <symbol id="i-share" viewBox="0 0 24 24"><path d="M8 8H5v13h14V8h-3M12 15V2m-4 4 4-4 4 4"/></symbol>
     <symbol id="i-home-add" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 7v10M7 12h10"/></symbol>
     <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m16 8-3 5-5 3 3-5zM12 3v2m0 14v2M3 12h2m14 0h2"/></symbol>
-  </svg>
-
-  <header class="masthead" id="masthead">
-    <a class="brand" href="#page=1" aria-label="Икра — к началу книги"><span class="brand-mark" aria-hidden="true"></span></a>
-    <div class="book-title"><h1>Фиолетовый <span>CRAFT</span></h1><p>Демоверсия <span aria-hidden="true">·</span> 10 страниц</p></div>
-    <div class="masthead-actions">
-      <button class="app-button" id="open-app" aria-haspopup="dialog" aria-controls="app-dialog" aria-label="Установить приложение"><svg class="icon" aria-hidden="true"><use href="#i-app"/></svg><span>Установить приложение</span></button>
-    </div>
-  </header>
-
-  <aside class="install-nudge" id="install-nudge" aria-label="Установка приложения" hidden>
+  </svg><aside class="install-nudge" id="install-nudge" aria-label="Установка приложения" hidden>
     <button id="show-install-guide"><svg class="icon" aria-hidden="true"><use href="#i-app"/></svg><span>Приложение CRAFT<small>Как установить</small></span><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>
     <button class="icon-button" id="dismiss-install-guide" aria-label="Скрыть подсказку установки"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button>
-  </aside>
-
-  <div class="reader-layout sidebar-open" id="reader-layout">
-    <div class="drawer-backdrop" id="drawer-backdrop" hidden></div>
-    <aside class="sidebar" id="sidebar" aria-labelledby="contents-title">
-      <div class="sidebar-heading"><h2 id="contents-title">Содержание</h2><button class="icon-button" id="close-contents" aria-label="Закрыть содержание" title="Закрыть содержание"><svg class="icon"><use href="#i-close"/></svg></button></div>
-      <nav class="contents" aria-label="Разделы книги">
-        <div class="chapter-group">
-          <a href="#page=1" data-page="1" class="contents-link chapter-link"><span>Как придумать<br>живой бренд<small>Василий Лебедев</small></span><span class="folio">1</span></a>
-          <a href="#page=2" data-page="2" class="contents-link sub-link"><span>Зачем вам CRAFT<br>для бренд-платформы</span><span class="folio">2</span></a>
-          <a href="#page=4" data-page="4" class="contents-link sub-link"><span>Кто ваша аудитория?</span><span class="folio">4</span></a>
-          <a href="#page=5" data-page="5" class="contents-link sub-link"><span>Якорный фреймворк</span><span class="folio">5</span></a>
-          <a href="#page=7" data-page="7" class="contents-link sub-link"><span>Атрибуты бренда</span><span class="folio">7</span></a>
-          <a href="#page=10" data-page="10" class="contents-link sub-link"><span>Пример из практики</span><span class="folio">10</span></a>
-        </div>
-      </nav>
-    </aside>
-
-    <main class="reader" id="reading-area" tabindex="-1" aria-label="Чтение книги">
-      <div class="toolbar" role="group" aria-label="Настройки чтения">
-        <button class="text-button contents-toggle" id="contents-toggle" aria-controls="sidebar" aria-expanded="true"><svg class="icon"><use href="#i-list"/></svg><span>Содержание</span></button>
-        <form class="page-form" id="page-form"><label class="sr-only" for="page-number">Страница</label><div><input id="page-number" type="text" inputmode="numeric" pattern="[0-9]+" value="1" aria-label="Перейти на страницу книги, от 1 до 10" autocomplete="off" disabled><span id="spread-end"></span><span class="page-total">/ 10</span></div><button class="page-go" type="submit">Перейти</button></form>
-        <button class="sample-end-button" id="sample-end" aria-haspopup="dialog" aria-controls="sample-dialog" hidden>Купить книгу</button>
-        <div class="view-controls">
-          <button class="icon-button view-toggle" id="view-toggle" aria-label="Показывать разворот" aria-pressed="true" title="Разворот / одна страница" disabled><svg class="icon"><use href="#i-spread"/></svg></button>
-          <div class="zoom-controls" role="group" aria-label="Масштаб">
-            <button class="icon-button" id="zoom-out" aria-label="Уменьшить" title="Уменьшить" disabled><svg class="icon"><use href="#i-minus"/></svg></button>
-            <button class="zoom-reset" id="zoom-reset" aria-label="Вписать страницу в экран" title="Вписать в экран" disabled>100%</button>
-            <button class="icon-button" id="zoom-in" aria-label="Увеличить" title="Увеличить" disabled><svg class="icon"><use href="#i-plus"/></svg></button>
-          </div>
-          <button class="icon-button fullscreen-toggle" id="fullscreen-toggle" aria-label="На весь экран" title="На весь экран"><svg class="icon"><use href="#i-expand"/></svg></button>
-        </div>
-      </div>
-
-      <div class="stage" id="stage" aria-busy="true" tabindex="0" aria-label="Страницы книги. Листайте свайпом вбок или стрелками на клавиатуре. Перейти к нужной странице можно по номеру вверху.">
-        <div class="book-mat"><div class="book" id="book"></div></div>
-        <div class="loading-note" id="loading-note" role="status"><span class="loading-line" aria-hidden="true"></span><p>Открываем книгу…</p></div>
-        <section class="error-panel" id="error-panel" hidden aria-labelledby="error-title"><h2 id="error-title">Книга не загрузилась</h2><p id="error-description">Проверьте соединение и попробуйте ещё раз.</p><div><button class="primary-button" id="retry"><svg class="icon"><use href="#i-reset"/></svg>Попробовать ещё раз</button><a href="open.html" id="recover-reader">Обновить приложение</a><a href="pdf.html#page=1" data-pdf-preview>Открыть PDF</a></div></section>
-      </div>
-
-      <p class="sr-only" id="reading-hint">Листайте свайпом влево или вправо.</p>
-      <p class="sr-only" id="announcer" aria-live="polite" aria-atomic="true"></p>
-    </main>
-  </div>
-  <noscript><div class="noscript-panel">Для читалки нужен JavaScript. <a href="pdf.html#page=1">Откройте просмотр PDF</a>.</div></noscript>
-  <dialog class="app-dialog" id="app-dialog" aria-labelledby="app-title">
+  </aside><dialog class="app-dialog" id="app-dialog" aria-labelledby="app-title">
     <div class="app-dialog-heading"><h2 id="app-title">Приложение CRAFT</h2><button class="icon-button" id="close-app" aria-label="Закрыть окно приложения"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
     <p class="app-intro">Читайте книгу в приложении — даже без интернета.</p>
     <button class="guide-text-button phone-button" id="open-phone" aria-haspopup="dialog" aria-controls="phone-dialog">Открыть на телефоне — QR-код</button>
@@ -172,11 +125,11 @@
       <p class="app-note" id="offline-note">После установки сохраните книгу внутри приложения.</p>
     </section>
     <p class="app-note" id="update-note" hidden>Доступна новая версия. <a id="update-reader" href="open.html">Обновить приложение</a></p>
-    <p class="app-demo-note">Демоверсия · 10 страниц книги.</p>
+    <p class="app-demo-note">Демоверсия · страницы 16–25 книги.</p>
   </dialog>
   <dialog class="app-dialog" id="sample-dialog" aria-labelledby="sample-title">
     <div class="app-dialog-heading"><h2 id="sample-title">Демоверсия прочитана</h2><button class="icon-button" data-close-dialog aria-label="Закрыть окно"><svg class="icon" aria-hidden="true"><use href="#i-close"/></svg></button></div>
-    <p class="app-intro">Вы прочитали 10 страниц «Фиолетового CRAFT». Продолжение — в полной версии книги.</p>
+    <p class="app-intro">Вы прочитали фрагмент «Фиолетового CRAFT». Продолжение — в полной версии книги.</p>
     <a class="primary-button" id="buy-book" href="https://ikraikra.ru/craft#order" target="_blank" rel="noopener">Купить полную версию</a>
     <p class="app-note" id="purchase-note">Откроется форма заказа на сайте ИКРЫ.</p>
     <button class="guide-text-button" data-close-dialog>Вернуться к чтению</button>
@@ -193,7 +146,5 @@
     <p class="app-note">Эта ссылка работает на Android и iPhone. На телефоне можно установить приложение.</p>
     <a class="guide-text-button" id="phone-android-link" href="open.html?install=android" target="_blank" rel="noopener">Открыть установку для Android</a>
   </dialog>
-  <script src="reader.js?v=12" type="module"></script>
-  <script src="pwa.js?v=12" type="module"></script>
-</body>
+  <dialog id="demo-contents" aria-labelledby="demo-toc-title"><div class="dialog-header"><h2 id="demo-toc-title">Содержание фрагмента</h2><button data-close class="close" aria-label="Закрыть содержание">×</button></div><nav id="demo-toc-list" aria-label="Разделы фрагмента"></nav></dialog><noscript>Для чтения демо включите JavaScript.</noscript></body>
 </html>

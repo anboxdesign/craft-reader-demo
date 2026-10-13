@@ -1,4 +1,4 @@
-/* Regenerate offline-files.js with scripts/build-craft-reader-pwa-v12.cjs after edits. */
+/* Regenerate offline-files.js with scripts/build-craft-demo-html-v13.mjs after edits. */
 importScripts('./offline-files.js');
 const {version, files, migrations} = self.CRAFT_OFFLINE;
 const scope = new URL('./', self.location.href);
@@ -7,7 +7,7 @@ const cacheName = `${prefix}${version}`;
 const urls = files.map(file => new URL(file, scope).href);
 const allowed = new Set(urls);
 const indexUrl = new URL('index.html', scope).href;
-const shell = files.filter(file => !file.startsWith('vendor/') && !file.startsWith('assets/pages/') && !file.endsWith('.pdf'));
+const shell = files.filter(file => !file.startsWith('vendor/') && !file.startsWith('assets/pages/') && !file.endsWith('.pdf') && file !== 'demo-edition-v13.json');
 let saving;
 const progressPorts = new Set();
 
@@ -17,6 +17,14 @@ self.addEventListener('install', event => {
     await cache.addAll(shell.map(file => new Request(new URL(file, scope), {cache: 'reload'})));
     // Preserve an already saved book; do not download it without the reader's request.
     const existing = await caches.keys();
+    // A reader who already saved v12 must not lose offline access during upgrade.
+    for (const oldName of existing.filter(name => name.startsWith(prefix) && name !== cacheName)) {
+      const oldCache = await caches.open(oldName);
+      if ((await oldCache.keys()).some(request => /assets\/pages\/2676a3c9c706\/page-1\.webp$/.test(new URL(request.url).pathname))) {
+        await cache.add(new Request(new URL('demo-edition-v13.json', scope), {cache:'reload'}));
+        break;
+      }
+    }
     for (const migration of migrations) {
       const previousName = `${prefix}${migration.fromVersion}`;
       if (!existing.includes(previousName)) continue;
@@ -71,11 +79,11 @@ async function saveAll() {
 
 self.addEventListener('message', event => {
   const port = event.ports[0];
-  if (event.data?.type === 'GET_RELEASE' && port) {port.postMessage({release:12,version});port.close();return;}
+  if (event.data?.type === 'GET_RELEASE' && port) {port.postMessage({release:13,version});port.close();return;}
   if (event.data?.type === 'ACTIVATE_UPDATE') {
     // Only the explicit entry/update page can activate a waiting release.
     const source = event.source?.url ? new URL(event.source.url) : null;
-    if (source?.origin === scope.origin && source.pathname === scope.pathname + 'open.html') event.waitUntil(self.skipWaiting());
+    if (source?.origin === scope.origin && source.pathname.startsWith(scope.pathname)) event.waitUntil(self.skipWaiting());
     return;
   }
   if (!port || !['OFFLINE_STATUS', 'SAVE_OFFLINE'].includes(event.data?.type)) return;
