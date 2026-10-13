@@ -20,7 +20,7 @@ self.addEventListener('install', event => {
     // A reader who already saved v12 must not lose offline access during upgrade.
     for (const oldName of existing.filter(name => name.startsWith(prefix) && name !== cacheName)) {
       const oldCache = await caches.open(oldName);
-      if ((await oldCache.keys()).some(request => /assets\/pages\/2676a3c9c706\/page-1\.webp$/.test(new URL(request.url).pathname))) {
+      if ((await oldCache.keys()).some(request => /(?:assets\/pages\/2676a3c9c706\/page-1\.webp|demo-edition-v13\.json)$/.test(new URL(request.url).pathname))) {
         await cache.add(new Request(new URL('demo-edition-v13.json', scope), {cache:'reload'}));
         break;
       }

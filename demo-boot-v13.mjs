@@ -10,9 +10,13 @@ try{
  if(!valid(initialPage)&&!savedAnchor)initialPage=JSON.parse(localStorage.getItem('craft-demo-reader-'+legacyBook)||'{}').page;
 }catch{}
 let initialSource=valid(initialPage)?initialPage+15:null;
-if(performance.getEntriesByType('navigation')[0]?.type==='reload'&&savedAnchor&&lastSource===initialSource)initialSource=null;
+// A parent-page reload creates a fresh iframe navigation, not a "reload" entry.
+// The same source-page hash therefore resumes its more precise saved block anchor.
+if(savedAnchor&&lastSource===initialSource)initialSource=null;
 const requested=Number(new URLSearchParams(location.search).get('source'));
 if(requested>=16&&requested<=25)initialSource=requested;
+// Tilda repeats the initial hash on iframe load; do not overwrite the saved anchor.
+window.craftDemoPage=valid(initialPage)?initialPage:null;
 window.craftDemoBridge={initialSource,position(source,index,count){
   const page=Math.max(1,Math.min(10,source-15));
   if(location.hash!==`#page=${page}`)history.replaceState(null,'',`#page=${page}`);
