@@ -83,7 +83,7 @@ function showError(error) {
   els['loading-note'].hidden = true;
   els['error-panel'].hidden = false;
   els['error-description'].textContent = location.protocol === 'file:'
-    ? 'Откройте читалку через локальный сервер или воспользуйтесь ссылкой на PDF.'
+    ? 'Откройте книгу через локальный сервер или воспользуйтесь ссылкой на PDF.'
     : 'Не удалось открыть страницы. Попробуйте ещё раз или откройте оригинальный PDF.';
   announce('Книга не загрузилась. Можно повторить загрузку или открыть PDF.');
   console.error('CRAFT reader:', error);
